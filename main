@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+rm -rf log
+mkdir log
+rm -rf ../data/edges
+mkdir ../data/edges
+rm -rf ../data/nodes
+mkdir ../data/nodes
+rm -rf ../data/tables
+mkdir ../data/tables
+rm -rf ../data/tmp
+mkdir ../data/tmp
+source env/bin/activate
+python -m src
+deactivate
