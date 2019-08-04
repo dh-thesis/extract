@@ -42,16 +42,12 @@ from .data_lang import *
 
 from .data_jour import *
 
-# /////////////// #
-# /// REWORK /// #
+# ///////////// #
+# /// ITEMS /// #
 # ///////////// #
 
-# from .x_data_items_mpis import * # ous_test
-# from .x_data_items_meta import * # ous_test
-# from .x_data_pers_mpis import * # ous_test
+# from .data_items import *
+
+# ///////////// #
 
 print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
-
-# //////////////////// #
-# /// PUBLICATIONS /// #
-# //////////////////// #
