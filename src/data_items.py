@@ -38,9 +38,9 @@ items_total = []
 
 pub_table = [["Id","Name","Year","Genre","Lang","Identifier","IdentifierType","Context"]]
 org_table = [["Id","Item","Name","Role","Identifier"]]
-aut_table = [["Id","Item","Name","givenName","Role","Identifier","IdentiferType","Organization","OrganizationIdentifier"]]
+aut_table = [["Id","Item","Name","givenName","Role","Identifier","IdentiferType","Organization"]]
 src_table = [["Id","Item","Name","Genre","Identifier","IdentiferType"]]
-src_aut_table = [["Id","Item","Source","Name","givenName","Role","Identifier","IdentiferType","Organization","OrganizationIdentifier"]]
+src_aut_table = [["Id","Item","Source","Name","givenName","Role","Identifier","IdentiferType","Organization"]]
 ext_table = [["Id","Item","Name","givenName","Role"]]
 src_ext_table = [["Id","Item","Name","givenName","Role"]]
 
@@ -138,7 +138,6 @@ for path in data_paths:
                                   pers_role,
                                   pers_id,
                                   pers_id_type,
-                                  pers_org_name,
                                   pers_org_id])
 
                 aut_table_i += 1
@@ -222,7 +221,6 @@ for path in data_paths:
                                           src_pers_gname,
                                           src_pers_role,
                                           src_pers_id_type,
-                                          src_pers_org_name,
                                           src_pers_org_id])
 
                     pub_src_auth_edges.append([item_id,src_pers_id])
