@@ -112,15 +112,15 @@ utils.write_csv(GRAPH_DIR + "mpis--ous_ous_edges--tree.csv",ous_edges)
 
 ## Institutes
 
-mpis = utils.read_json(BASE_DIR + 'mpis/mapped/ous_mpi.json')
-
 institutes = [['Id','Name']]
 
-for mpi in mpis:
-    institutes.append([mpi,mpis[mpi]])
+for rec in ous['records']:
+    if rec['data']['objectId'] in mpis:
+        objectId = rec['data']['objectId']
+        name = rec['data']['name']
+        institutes.append([objectId,name])
 
 utils.write_csv(GRAPH_DIR + 'mpis--ous_nodes.csv', institutes)
-
 
 ## Children of Institutes
 
