@@ -184,8 +184,8 @@ for path in data_paths:
                               org_role,
                               org_id])
             if org_id and org_id not in all_orgs:
-                pub_org_edges.append(item_id,org_id)
-                pub_org_nodes.append(org_id,org_name)
+                pub_org_edges.append([item_id,org_id])
+                pub_org_nodes.append([org_id,org_name])
             org_table_i += 1
 
         # //////////////// #
