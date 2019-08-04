@@ -153,7 +153,7 @@ def organizations_identifier_from_creator(creator):
     """
     extract organizations’ identifiers from item
     """
-    return value_from_level('identifer',creator['organization'])
+    return value_from_level('identifier',creator['organization'])
 
 def field_from_metadata(field, item, value=True):
     """
