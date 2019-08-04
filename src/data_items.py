@@ -57,7 +57,7 @@ pub_src_auth_edges = [["Source","Target"]]
 pub_src_ext_edges = [["Source","Target"]]
 pub_org_edges = [["Source","Target"]]
 pub_auth_org_edges = [["Source","Target"]]
-pub_src_auth_org_edges = [["Source","Target"]] ###
+pub_src_auth_org_edges = [["Source","Target"]]
 
 all_pers = []
 all_orgs = []
@@ -65,13 +65,12 @@ all_pers_orgs = []
 all_src_pers = []
 all_src_pers_orgs = []
 
-ext_i = 1
-src_ext_i = 1
-
 aut_table_i = 1
+ext_table_i = 1
 org_table_i = 1
 src_table_i = 1
 src_aut_table_i = 1
+src_ext_table_i = 1
 
 for path in data_paths:
     
@@ -162,15 +161,15 @@ for path in data_paths:
                         all_pers_orgs.append(pers_org_id)
 
             else:
-                ext_table.append([str(ext_i),
+                ext_table.append([str(ext_table_i),
                                   item_id,
                                   pers_name[1],
                                   pers_name[0],
                                   pers_role])
 
                 pub_ext_edges.append([item_id,
-                                  str(ext_i)])
-                ext_i += 1
+                                  str(ext_table_i)])
+                ext_table_i += 1
 
         # ORGANIZATIONS
 
@@ -183,9 +182,11 @@ for path in data_paths:
                               org_name,
                               org_role,
                               org_id])
-            if org_id and org_id not in all_orgs:
+            if org_id:
                 pub_org_edges.append([item_id,org_id])
-                pub_org_nodes.append([org_id,org_name])
+                if org_id not in all_orgs:
+                    pub_org_nodes.append([org_id,org_name])
+                    all_orgs.append(org_id)
             org_table_i += 1
 
         # //////////////// #
@@ -243,14 +244,14 @@ for path in data_paths:
 
                     src_aut_table_i += 1
                 else:
-                    src_ext_table.append([str(src_ext_i),
+                    src_ext_table.append([str(src_ext_table_i),
                                           item_id,
                                           str(src_table_i),
                                           src_pers_name,
                                           src_pers_gname,
                                           src_pers_role])
-                    pub_src_ext_edges.append([item_id,str(src_ext_i)])
-                    src_ext_i += 1
+                    pub_src_ext_edges.append([item_id,str(src_ext_table_i)])
+                    src_ext_table_i += 1
 
             src_table_i += 1
 
@@ -258,7 +259,7 @@ print("")
 print("processed",len(items_total),"records from",len(data_paths),"collections!")
 print("found",len(src_table)-1,"sources!")
 print("found",aut_table_i,"internal authorships!")
-print("found",ext_i,"external authorships!")
+print("found",ext_table_i,"external authorships!")
 
 print("")
 
