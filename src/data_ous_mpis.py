@@ -2,11 +2,11 @@ import sys
 
 from pybman import utils
 
-print("console output is redirected to data_mpis.log ...")
+print("console output is redirected to data_ous_mpis.log ...")
 
 stdout = sys.stdout
 
-log = open("log/data_mpis.log", "w+")
+log = open("log/data_ous_mpis.log", "w+")
 sys.stdout = log
 
 BASE_DIR = '../pubdata/data/'
