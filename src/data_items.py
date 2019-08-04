@@ -21,7 +21,7 @@ OUT_DIR = '../data/'
 GRAPH_DIR = OUT_DIR + 'graph/'
 TABLES_DIR = OUT_DIR + 'tables/'
 
-ITEMS_DIR = BASE_DIR + 'items/ous_mpi/' # items/ous_mpi/
+ITEMS_DIR = BASE_DIR + 'items/'
 
 print("start processing data!")
 
