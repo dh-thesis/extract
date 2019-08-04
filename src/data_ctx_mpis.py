@@ -22,7 +22,7 @@ for mpi in mpis_ctx:
     for context in mpis_ctx[mpi]:
         institutes_contexts.append([mpi, context])
 
-utils.write_csv(GRPAH_DIR + 'mpis--ous_ctx_edges.csv', institutes_contexts)
+utils.write_csv(GRAPH_DIR + 'mpis--ous_ctx_edges.csv', institutes_contexts)
 
 log.close()
 sys.stdout = stdout

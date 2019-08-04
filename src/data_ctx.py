@@ -15,7 +15,6 @@ MPIS_DIR = BASE_DIR + 'mpis/'
 
 OUT_DIR = '../data/'
 GRAPH_DIR = OUT_DIR + 'graph/'
-GRAPH_DIR = OUT_DIR + 'edges/'
 
 ctxs = utils.read_json(PURE_DIR + "ctx/all.json")
 mpis_ctx = utils.read_json(MPIS_DIR + 'mapped/ous_ctx.json')

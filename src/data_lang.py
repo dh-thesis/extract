@@ -10,7 +10,7 @@ log = open("log/data_lang.log", "w+")
 sys.stdout = log
 
 ITEMS_DIR = '../pubdata/data/items/'
-GRAPH_DIR = '../data/nodes/'
+GRAPH_DIR = '../data/graph/'
 
 ## Languages
 languages_raw = utils.read_json('../pubdata/data/pure/lang/collection.json')

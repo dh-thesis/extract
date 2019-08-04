@@ -64,7 +64,7 @@ for p in pers:
         continue
 
 utils.write_csv(GRAPH_DIR + 'pure--pers_nodes.csv', persons)
-utils.write_csv(EDGES_DIR + 'pure--pers_ous_edges.csv', persons_institutes)
+utils.write_csv(GRAPH_DIR + 'pure--pers_ous_edges.csv', persons_institutes)
 
 log.close()
 sys.stdout = stdout
