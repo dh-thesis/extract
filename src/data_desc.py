@@ -2,6 +2,8 @@ import sys
 
 from pybman import utils
 
+from .utils_path import BASE_DIR
+
 stdout = sys.stdout
 
 print("console output is redirected to data_desc.log ...")
@@ -9,7 +11,6 @@ print("console output is redirected to data_desc.log ...")
 log = open("log/data_desc.log", "w+")
 sys.stdout = log
 
-BASE_DIR = '../pubdata/data/'
 MPIS_DIR = BASE_DIR + 'mpis/'
 
 OUT_DIR = '../data/'
@@ -18,12 +19,12 @@ TABLES_DIR = OUT_DIR + 'tables/'
 
 ## Tags
 
-tags = utils.read_plain_clean('../pubdata/data/mpis/mapped/ous_tags_all.txt')
+tags = utils.read_plain_clean(BASE_DIR + 'mpis/mapped/ous_tags_all.txt')
 utils.write_list(GRAPH_DIR + 'mpis--all_tags.txt', tags)
 
 ## Tags of Institutes
 
-mpis_tags = utils.read_json('../pubdata/data/mpis/mapped/ous_tags.json')
+mpis_tags = utils.read_json(BASE_DIR + 'mpis/mapped/ous_tags.json')
 
 institutes_tags = [['Source','Target']]
 
@@ -36,7 +37,7 @@ utils.write_csv(GRAPH_DIR + 'mpis--ous_tags_edges.csv', institutes_tags)
 
 ## CATEGORIES
 
-# categories_raw = utils.read_json('../pubdata/data/mpis/mapped/cat_ous.json')
+# categories_raw = utils.read_json(BASE_DIR + 'mpis/mapped/cat_ous.json')
 
 #categories = list(categories_raw.keys())
 #categories.sort()
@@ -45,7 +46,7 @@ utils.write_csv(GRAPH_DIR + 'mpis--ous_tags_edges.csv', institutes_tags)
 
 ## Categories of Institutes (TABLE)
 
-# mpis_cat = utils.read_json('../pubdata/data/mpis/mapped/ous_cat.json')
+# mpis_cat = utils.read_json(BASE_DIR + 'mpis/mapped/ous_cat.json')
 
 # institutes_categories = [['Institute','Categories']]
 

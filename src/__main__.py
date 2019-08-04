@@ -46,7 +46,7 @@ from .data_jour import *
 # /// ITEMS /// #
 # ///////////// #
 
-# from .data_items import *
+from .data_items import *
 
 # ///////////// #
 

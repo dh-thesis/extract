@@ -2,6 +2,8 @@ import sys
 
 from pybman import utils
 
+from .utils_path import BASE_DIR
+
 print("console output is redirected to data_pers.log ...")
 
 stdout = sys.stdout
@@ -12,7 +14,7 @@ sys.stdout = log
 DATA_DIR = '../data/'
 GRAPH_DIR = DATA_DIR + 'graph/'
 
-pers = utils.read_json('../pubdata/data/pure/pers/collection.json')
+pers = utils.read_json(BASE_DIR + 'pure/pers/collection.json')
 
 escidoc_pos = 'http_purl_org_escidoc_metadata_terms_0_1_position'
 dc_idx = 'http_purl_org_dc_elements_1_1_identifier'

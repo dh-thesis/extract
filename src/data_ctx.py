@@ -2,6 +2,8 @@ import sys
 
 from pybman import utils
 
+from .utils_path import BASE_DIR
+
 print("console output is redirected to data_ctx.log ...")
 
 stdout = sys.stdout
@@ -9,7 +11,6 @@ stdout = sys.stdout
 log = open("log/data_ctx.log", "w+")
 sys.stdout = log
 
-BASE_DIR = '../pubdata/data/'
 PURE_DIR = BASE_DIR + 'pure/'
 MPIS_DIR = BASE_DIR + 'mpis/'
 

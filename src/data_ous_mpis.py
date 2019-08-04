@@ -2,14 +2,14 @@ import sys
 
 from pybman import utils
 
+from .utils_path import BASE_DIR
+
 print("console output is redirected to data_ous_mpis.log ...")
 
 stdout = sys.stdout
 
 log = open("log/data_ous_mpis.log", "w+")
 sys.stdout = log
-
-BASE_DIR = '../pubdata/data/'
 
 MPIS_DIR = BASE_DIR + 'mpis/'
 PURE_DIR = BASE_DIR + 'pure/'
@@ -112,7 +112,7 @@ utils.write_csv(GRAPH_DIR + "mpis--ous_ous_edges--tree.csv",ous_edges)
 
 ## Institutes
 
-mpis = utils.read_json('../pubdata/data/mpis/mapped/ous_mpi.json')
+mpis = utils.read_json(BASE_DIR + 'mpis/mapped/ous_mpi.json')
 
 institutes = [['Id','Name']]
 

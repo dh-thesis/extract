@@ -9,11 +9,12 @@ print("console output is redirected to data_lang.log ...")
 log = open("log/data_lang.log", "w+")
 sys.stdout = log
 
-ITEMS_DIR = '../pubdata/data/items/'
+from .utils_path import BASE_DIR
+
 GRAPH_DIR = '../data/graph/'
 
 ## Languages
-languages_raw = utils.read_json('../pubdata/data/pure/lang/collection.json')
+languages_raw = utils.read_json(BASE_DIR + 'pure/lang/collection.json')
 
 languages = [['Id','Name','Coordinates']]
 

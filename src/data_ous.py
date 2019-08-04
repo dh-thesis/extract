@@ -2,6 +2,8 @@ import sys
 
 from pybman import utils
 
+from .utils_path import BASE_DIR
+
 print("console output is redirected to data_ous.log ...")
 
 stdout = sys.stdout
@@ -12,7 +14,7 @@ sys.stdout = log
 OUT_DIR = '../data/'
 GRAPH_DIR = OUT_DIR + 'graph/'
 
-ous = utils.read_json('../pubdata/data/pure/ous/all.json')
+ous = utils.read_json(BASE_DIR + 'pure/ous/all.json')
 
 org_nodes = [['Id','Name']]
 org_edges = [['Source','Target']]

@@ -2,6 +2,8 @@ import sys
 
 from pybman import utils
 
+from .utils_path import BASE_DIR
+
 stdout = sys.stdout
 
 print("console output is redirected to data_jour.log ...")
@@ -12,7 +14,7 @@ sys.stdout = log
 GRAPH_DIR = '../data/graph/'
 
 ## Journals
-journals_raw =  utils.read_json('../pubdata/data/pure/jour/collection.json')
+journals_raw =  utils.read_json(BASE_DIR + 'pure/jour/collection.json')
 
 dc_title            = 'http_purl_org_dc_elements_1_1_title'
 dc_publisher        = 'http_purl_org_dc_elements_1_1_publisher'
