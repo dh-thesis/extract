@@ -17,8 +17,7 @@ PURE_DIR = BASE_DIR + 'pure/'
 TEMP_DIR = '../data/tmp/'
 
 OUT_DIR = '../data/'
-NODES_DIR = OUT_DIR + 'nodes/'
-EDGES_DIR = OUT_DIR + 'edges/'
+GRAPH_DIR = OUT_DIR + 'graph/'
 TABLES_DIR = OUT_DIR + 'tables/'
 
 mpis = utils.read_json(MPIS_DIR + 'mapped/ous_ctx.json')
@@ -89,8 +88,8 @@ for rec in ous['records']:
 # utils.write_csv(TEMP_DIR + "tree_ous3_nodes.csv",ous_nodes)
 # utils.write_csv(TEMP_DIR + "tree_ous3_edges.csv",ous_edges)
 
-utils.write_csv(NODES_DIR + "mpis--ous_nodes--tree.csv",ous_nodes)
-utils.write_csv(EDGES_DIR + "mpis--ous_ous_edges--tree.csv",ous_edges)
+utils.write_csv(GRAPH_DIR + "mpis--ous_nodes--tree.csv",ous_nodes)
+utils.write_csv(GRAPH_DIR + "mpis--ous_ous_edges--tree.csv",ous_edges)
 
 # check for parents not yet collected
 
@@ -120,14 +119,14 @@ institutes = [['Id','Name']]
 for mpi in mpis:
     institutes.append([mpi,mpis[mpi]])
 
-utils.write_csv(NODES_DIR + 'mpis--ous_nodes.csv', institutes)
+utils.write_csv(GRAPH_DIR + 'mpis--ous_nodes.csv', institutes)
 
 
 ## Children of Institutes
 
 kids_names = [["Id","Name"]]
 
-mpis_kids_nodes = utils.read_csv_with_header(NODES_DIR + 'mpis--ous_nodes--tree.csv')
+mpis_kids_nodes = utils.read_csv_with_header(GRAPH_DIR + 'mpis--ous_nodes--tree.csv')
 mpis_kids_nodes = list(mpis_kids_nodes.values())
 
 for i in range(1,len(mpis_kids_nodes[0])):
@@ -136,11 +135,11 @@ for i in range(1,len(mpis_kids_nodes[0])):
     if kid_id not in mpis:
         kids_names.append([kid_id, kid_name])
 
-utils.write_csv(NODES_DIR + 'mpis--ous_nodes--tree--clean.csv', kids_names)
+utils.write_csv(GRAPH_DIR + 'mpis--ous_nodes--tree--clean.csv', kids_names)
 
-mpis_kids = utils.read_plain_clean(EDGES_DIR + 'mpis--ous_ous_edges--tree.csv')
+mpis_kids = utils.read_plain_clean(GRAPH_DIR + 'mpis--ous_ous_edges--tree.csv')
 mpis_kids = [mpi_kids.replace('"','').split(',') for mpi_kids in mpis_kids]
-utils.write_csv(EDGES_DIR + 'mpis--ous_ous_edges--tree--clean.csv', mpis_kids)
+utils.write_csv(GRAPH_DIR + 'mpis--ous_ous_edges--tree--clean.csv', mpis_kids)
 
 log.close()
 sys.stdout = stdout

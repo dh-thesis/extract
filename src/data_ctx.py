@@ -14,8 +14,8 @@ PURE_DIR = BASE_DIR + 'pure/'
 MPIS_DIR = BASE_DIR + 'mpis/'
 
 OUT_DIR = '../data/'
-NODES_DIR = OUT_DIR + 'nodes/'
-EDGES_DIR = OUT_DIR + 'edges/'
+GRAPH_DIR = OUT_DIR + 'graph/'
+GRAPH_DIR = OUT_DIR + 'edges/'
 
 ctxs = utils.read_json(PURE_DIR + "ctx/all.json")
 mpis_ctx = utils.read_json(MPIS_DIR + 'mapped/ous_ctx.json')
@@ -32,8 +32,8 @@ for rec in ctxs['records']:
         maintainer = m['objectId']
         ctx_edges.append([objectId, maintainer])
 
-utils.write_csv(NODES_DIR + "pure--ctx_nodes.csv", ctx_nodes)
-utils.write_csv(EDGES_DIR + "pure--ctx_ous_edges.csv", ctx_edges)
+utils.write_csv(GRAPH_DIR + "pure--ctx_nodes.csv", ctx_nodes)
+utils.write_csv(GRAPH_DIR + "pure--ctx_ous_edges.csv", ctx_edges)
 
 log.close()
 sys.stdout = stdout

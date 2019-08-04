@@ -10,8 +10,7 @@ log = open("log/data_pers.log", "w+")
 sys.stdout = log
 
 DATA_DIR = '../data/'
-NODES_DIR = DATA_DIR + 'nodes/'
-EDGES_DIR = DATA_DIR + 'edges/'
+GRAPH_DIR = DATA_DIR + 'graph/'
 
 pers = utils.read_json('../pubdata/data/pure/pers/collection.json')
 
@@ -64,7 +63,7 @@ for p in pers:
         print("skip person...")
         continue
 
-utils.write_csv(NODES_DIR + 'pure--pers_nodes.csv', persons)
+utils.write_csv(GRAPH_DIR + 'pure--pers_nodes.csv', persons)
 utils.write_csv(EDGES_DIR + 'pure--pers_ous_edges.csv', persons_institutes)
 
 log.close()

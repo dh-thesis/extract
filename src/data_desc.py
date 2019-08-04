@@ -13,14 +13,13 @@ BASE_DIR = '../pubdata/data/'
 MPIS_DIR = BASE_DIR + 'mpis/'
 
 OUT_DIR = '../data/'
-NODES_DIR = OUT_DIR + 'nodes/'
-EDGES_DIR = OUT_DIR + 'edges/'
+GRAPH_DIR = OUT_DIR + 'graph/'
 TABLES_DIR = OUT_DIR + 'tables/'
 
 ## Tags
 
 tags = utils.read_plain_clean('../pubdata/data/mpis/mapped/ous_tags_all.txt')
-utils.write_list(NODES_DIR + 'mpis--all_tags.txt', tags)
+utils.write_list(GRAPH_DIR + 'mpis--all_tags.txt', tags)
 
 ## Tags of Institutes
 
@@ -33,7 +32,7 @@ for mpi in mpis_tags:
     for tag in mpi_tags:
         institutes_tags.append([mpi, tag])
 
-utils.write_csv(EDGES_DIR + 'mpis--ous_tags_edges.csv', institutes_tags)
+utils.write_csv(GRAPH_DIR + 'mpis--ous_tags_edges.csv', institutes_tags)
 
 ## CATEGORIES
 
@@ -42,7 +41,7 @@ utils.write_csv(EDGES_DIR + 'mpis--ous_tags_edges.csv', institutes_tags)
 #categories = list(categories_raw.keys())
 #categories.sort()
 
-#utils.write_list(NODES_DIR + 'mpis--all_categories.txt', categories)
+#utils.write_list(GRAPH_DIR + 'mpis--all_categories.txt', categories)
 
 ## Categories of Institutes (TABLE)
 
@@ -92,9 +91,9 @@ print("found",len(cat_edges)-1,"edges between",
       len(all_mpis), "institutes to",
       len(all_cats),"categories")
 
-utils.write_csv(NODES_DIR + "mpis--ous_nodes--cats.csv", mpis_nodes)
-utils.write_csv(NODES_DIR + "mpis--cats_nodes.csv", cat_nodes)
-utils.write_csv(EDGES_DIR + "mpis--ous_cat_edges.csv", cat_edges)
+utils.write_csv(GRAPH_DIR + "mpis--ous_nodes--cats.csv", mpis_nodes)
+utils.write_csv(GRAPH_DIR + "mpis--cats_nodes.csv", cat_nodes)
+utils.write_csv(GRAPH_DIR + "mpis--ous_cat_edges.csv", cat_edges)
 
 ## Tags of Institutes of Categories
 
@@ -180,9 +179,9 @@ for cat in ct_edge:
 
 print("found categories for",len(all_c),"institutes")
 
-utils.write_csv(NODES_DIR + "mpis--cats_nodes--cats-tags.csv", cat_nodes)
-utils.write_csv(NODES_DIR + "mpis--tags_nodes--cats-tags.csv", tags_nodes)
-utils.write_csv(EDGES_DIR + "mpis--cats_tags_edges.csv", cat_edges)
+utils.write_csv(GRAPH_DIR + "mpis--cats_nodes--cats-tags.csv", cat_nodes)
+utils.write_csv(GRAPH_DIR + "mpis--tags_nodes--cats-tags.csv", tags_nodes)
+utils.write_csv(GRAPH_DIR + "mpis--cats_tags_edges.csv", cat_edges)
 
 log.close()
 sys.stdout = stdout

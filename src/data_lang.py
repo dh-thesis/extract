@@ -10,7 +10,7 @@ log = open("log/data_lang.log", "w+")
 sys.stdout = log
 
 ITEMS_DIR = '../pubdata/data/items/'
-NODES_DIR = '../data/nodes/'
+GRAPH_DIR = '../data/nodes/'
 
 ## Languages
 languages_raw = utils.read_json('../pubdata/data/pure/lang/collection.json')
@@ -34,7 +34,7 @@ for lang in languages_raw:
         coordinates = languages_raw[lang][google_coordinates]
     languages.append([lang, name, coordinates])
 
-utils.write_csv(NODES_DIR + 'pure--lang_nodes.csv', languages)
+utils.write_csv(GRAPH_DIR + 'pure--lang_nodes.csv', languages)
 
 log.close()
 sys.stdout = stdout

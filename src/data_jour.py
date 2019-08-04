@@ -9,7 +9,7 @@ print("console output is redirected to data_jour.log ...")
 log = open("log/data_jour.log", "w+")
 sys.stdout = log
 
-NODES_DIR = '../data/nodes/'
+GRAPH_DIR = '../data/graph/'
 
 ## Journals
 journals_raw =  utils.read_json('../pubdata/data/pure/jour/collection.json')
@@ -67,7 +67,7 @@ for j in journals_raw:
         print("journal",j,"has no identifier!")
     journals.append([jour_id, name, publisher, place, issn])
 
-utils.write_csv(NODES_DIR+'pure--jour_nodes.csv', journals)
+utils.write_csv(GRAPH_DIR+'pure--jour_nodes.csv', journals)
 
 log.close()
 sys.stdout = stdout
