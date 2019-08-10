@@ -98,7 +98,6 @@ utils.write_csv(GRAPH_DIR + "mpis--ous_cat_edges.csv", cat_edges)
 
 ## Tags of Institutes of Categories
 
-
 cats = utils.read_json(MPIS_DIR + 'mapped/cat_ous.json')
 tags = utils.read_json(MPIS_DIR + 'mapped/ous_tags.json')
 
@@ -115,29 +114,19 @@ cat_tags = {}
 tags_cat = {}
 
 for cat in c:
-
     cat_tags[cat] = []
     for ou_idx in cats[cat]:
-
-        if ou_idx in all_c:
-            continue
-        else:
+        if not ou_idx in all_c:
             all_c.append(ou_idx)
-
         ou_tags = tags[ou_idx]
         for ou_tag in ou_tags:
-
             if ou_tag not in all_t:
                 all_t.append(ou_tag)
-
             if ou_tag not in tags_cat:
                 tags_cat[ou_tag] = [cat]
             else:
                 if cat not in tags_cat[ou_tag]:
                     tags_cat[ou_tag].append(cat)
-                    print("found tag",ou_tag,"used in at least two categories:")
-                    print(tags_cat[ou_tag])
-
             if ou_tag not in cat_tags[cat]:
                 cat_tags[cat].append(ou_tag)
 
