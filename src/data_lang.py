@@ -16,7 +16,7 @@ GRAPH_DIR = '../data/graph/'
 ## Languages
 languages_raw = utils.read_json(BASE_DIR + 'pure/lang/collection.json')
 
-languages = [['Id','Name','Coordinates']]
+languages = [['Id','Label','Coordinates']]
 
 dc_title = 'http_purl_org_dc_elements_1_1_title'
 dc_idx = 'http_purl_org_dc_elements_1_1_identifier'

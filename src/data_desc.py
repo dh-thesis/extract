@@ -61,10 +61,10 @@ utils.write_csv(GRAPH_DIR + 'mpis--ous_tags_edges.csv', institutes_tags)
 mpis = utils.read_json(MPIS_DIR + 'mapped/ous_mpi.json')
 cats = utils.read_json(MPIS_DIR + 'mapped/cat_ous.json')
 
-cat_nodes = [["Id","Name"]]
+cat_nodes = [["Id","Label"]]
 cat_edges = [["Source","Target"]]
 
-mpis_nodes = [["Id","Name"]]
+mpis_nodes = [["Id","Label"]]
 
 all_mpis = []
 all_cats = list(cats.keys())
@@ -133,7 +133,7 @@ for cat in c:
 
 all_c.sort()
 
-cat_nodes = [["Id","Name"]]
+cat_nodes = [["Id","Label"]]
 ctags = {}
 
 for i, cat in enumerate(c):
@@ -142,7 +142,7 @@ for i, cat in enumerate(c):
     ctags[cat_idx] = cat_tags[cat]
 
 
-tags_nodes = [["Id", "Name"]]
+tags_nodes = [["Id", "Label"]]
 
 ct_edge = {}
 
@@ -171,7 +171,7 @@ print("found categories for",len(all_c),"institutes")
 
 utils.write_csv(GRAPH_DIR + "mpis--cats_nodes--cats-tags.csv", cat_nodes)
 utils.write_csv(GRAPH_DIR + "mpis--tags_nodes--cats-tags.csv", tags_nodes)
-utils.write_csv(GRAPH_DIR + "mpis--cats_tags_edges.csv", cat_edges)
+utils.write_csv(GRAPH_DIR + "mpis--cats-tags_edges.csv", cat_edges)
 
 log.close()
 sys.stdout = stdout

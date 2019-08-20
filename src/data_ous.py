@@ -16,7 +16,7 @@ GRAPH_DIR = OUT_DIR + 'graph/'
 
 ous = utils.read_json(BASE_DIR + 'pure/ous/all.json')
 
-org_nodes = [['Id','Name']]
+org_nodes = [['Id','Label']]
 org_edges = [['Source','Target']]
 
 for record in ous['records']:

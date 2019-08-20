@@ -112,7 +112,7 @@ utils.write_csv(GRAPH_DIR + "mpis--ous_ous_edges--tree.csv",ous_edges)
 
 ## Institutes
 
-institutes = [['Id','Name']]
+institutes = [['Id','Label']]
 
 for rec in ous['records']:
     if rec['data']['objectId'] in mpis:
@@ -124,7 +124,7 @@ utils.write_csv(GRAPH_DIR + 'mpis--ous_nodes.csv', institutes)
 
 ## Children of Institutes
 
-kids_names = [["Id","Name"]]
+kids_names = [["Id","Label"]]
 
 mpis_kids_nodes = utils.read_csv_with_header(GRAPH_DIR + 'mpis--ous_nodes--tree.csv')
 mpis_kids_nodes = list(mpis_kids_nodes.values())

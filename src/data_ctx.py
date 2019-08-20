@@ -20,7 +20,7 @@ GRAPH_DIR = OUT_DIR + 'graph/'
 ctxs = utils.read_json(PURE_DIR + "ctx/all.json")
 mpis_ctx = utils.read_json(MPIS_DIR + 'mapped/ous_ctx.json')
 
-ctx_nodes = [["Id","Name"]]
+ctx_nodes = [["Id","Label"]]
 ctx_edges = [["Source","Target"]]
 
 for rec in ctxs['records']:

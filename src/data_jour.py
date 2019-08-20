@@ -29,7 +29,7 @@ escidoc_issn = 'http://purl.org/escidoc/metadata/terms/0.1/ISSN'
 ##  TO DO !!
 ##
 
-journals = [['Id','Name','Publisher','Place','ISSN']] 
+journals = [['Id','Label','Publisher','Place','ISSN']] 
 
 for j in journals_raw:
     jour_id = j

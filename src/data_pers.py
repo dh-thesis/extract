@@ -24,8 +24,8 @@ xmlns_family = 'http_xmlns_com_foaf_0_1_family_name'
 xmlns_given = 'http_xmlns_com_foaf_0_1_givenname'
 eprint_affilation = 'http_purl_org_eprint_terms_affiliatedInstitution'
 
-persons = [['Id','Name']]
-persons_institutes = [['Person','Institute']]
+persons = [['Id','Label']]
+persons_institutes = [['Source','Target']]
 
 for p in pers:
     pers_id = pers[p]['id'].split("/")[-1]
