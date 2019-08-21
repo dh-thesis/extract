@@ -41,8 +41,8 @@ for mpi in ous_tags:
         tag_id = 'tag_' + str(tag_id)
         mpis_tags.append([mpi, tag_id])
 
-print("found",len(mpis_tags)-1,"edges between",
-      len(ous_tags)-1, "institutes to",
+print("found",len(mpis_tags)-1,"edges from",
+      len(ous_tags), "institutes to",
       len(tag_nodes)-1,"tags")
 
 utils.write_csv(GRAPH_DIR + 'mpis--ous_tags_edges.csv', mpis_tags)
@@ -73,7 +73,7 @@ for i, category in enumerate(all_cats):
             mpis_nodes.append([ou_idx, mpis[ou_idx]])
         cat_edges.append([ou_idx, cat_idx])
 
-print("found",len(cat_edges)-1,"edges between",
+print("found",len(cat_edges)-1,"edges from",
       len(all_mpis), "institutes to",
       len(all_cats),"categories")
 
