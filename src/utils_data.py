@@ -291,9 +291,23 @@ def sources_titles_genres_from_item(item):
 
 def creators_from_source(source):
     """
-    extract sources’ titles and genres from item
+    extract sources’ creators
     """
     return list_from_level('creators',source)
+
+def sources_organizations_from_item(item):
+    """
+    extract sources’ creators from item if organization
+    """
+    result = []
+    for source in sources(item):
+        source_organizations = []
+        if field_in_level('creators', source):
+            for creator in creators_from_source(source):
+                if field_in_level('organization', creator):
+                    source_organizations.append(creator)
+        result.append(source_organizations)
+    return result
 
 def sources_persons_from_item(item):
     """
