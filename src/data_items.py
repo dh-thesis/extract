@@ -22,6 +22,7 @@ GRAPH_DIR = OUT_DIR + 'graph/'
 TABLES_DIR = OUT_DIR + 'tables/'
 
 ITEMS_DIR = BASE_DIR + 'items/'
+# ITEMS_DIR = BASE_DIR + 'items-sample/'
 
 print("start processing data!")
 
@@ -39,31 +40,45 @@ items_total = []
 pub_table = [["Id","Label","Year","Genre","Lang","Identifier","IdentifierType","Context"]]
 org_table = [["Id","Item","Label","Role","Identifier"]]
 aut_table = [["Id","Item","Label","givenName","Role","Identifier","IdentiferType","Organization"]]
+ext_table = [["Id","Item","Label","givenName","Role","Organization"]]
 src_table = [["Id","Item","Label","Genre","Identifier","IdentiferType"]]
 src_aut_table = [["Id","Item","Source","Label","givenName","Role","Identifier","IdentiferType","Organization"]]
-ext_table = [["Id","Item","Label","givenName","Role"]]
-src_ext_table = [["Id","Item","Label","givenName","Role"]]
+src_ext_table = [["Id","Item","Source","Label","givenName","Role","Organization"]]
+src_org_table = [["Id","Item","Source","Label","Role","Identifier"]]
 
 pub_nodes = [["Id","Label"]]
 pub_org_nodes = [["Id","Label"]]
 pub_auth_nodes = [["Id","Label","givenName","IdType"]]
+pub_ext_nodes = [["Id","Label","givenName"]]
 pub_auth_org_nodes = [["Id","Label","IdentifierPath","Address"]]
+pub_ext_org_nodes = [["Id","Label","IdentifierPath","Address"]]
+
+pub_src_org_nodes = [["Id","Label"]]
+pub_src_ext_nodes = [["Id","Label","givenName"]]
 pub_src_auth_nodes = [["Id","Label","givenName","IdType"]]
 pub_src_auth_org_nodes = [["Id","Label","IdentifierPath","Address"]]
+pub_src_ext_org_nodes = [["Id","Label","IdentifierPath","Address"]]
 
+pub_org_edges = [["Source","Target"]]
 pub_ext_edges = [["Source","Target"]]
 pub_auth_edges = [["Source","Target"]]
+pub_auth_org_edges = [["Source","Target"]]
+pub_ext_org_edges = [["Source","Target"]]
+
+pub_src_org_edges = [["Source","Target"]]
 pub_src_auth_edges = [["Source","Target"]]
 pub_src_ext_edges = [["Source","Target"]]
-pub_org_edges = [["Source","Target"]]
-pub_auth_org_edges = [["Source","Target"]]
 pub_src_auth_org_edges = [["Source","Target"]]
+pub_src_ext_org_edges = [["Source","Target"]]
 
 all_pers = []
 all_orgs = []
 all_pers_orgs = []
+all_ext_orgs = []
 all_src_pers = []
+all_src_orgs = []
 all_src_pers_orgs = []
+all_src_ext_orgs = []
 
 aut_table_i = 1
 ext_table_i = 1
@@ -71,6 +86,7 @@ org_table_i = 1
 src_table_i = 1
 src_aut_table_i = 1
 src_ext_table_i = 1
+src_org_table_i = 1
 
 for path in data_paths:
     
@@ -150,7 +166,7 @@ for path in data_paths:
                     all_pers.append(pers_id)
 
                 if pers_org_id:
-
+                    # pub_auth_org--coop_edges.append([item_id,pers_org_id])
                     pub_auth_org_edges.append([pers_id,pers_org_id])
 
                     if pers_org_id not in all_pers_orgs:
@@ -162,14 +178,31 @@ for path in data_paths:
 
             else:
                 ext_table.append([str(ext_table_i),
-                                  item_id,
-                                  pers_name[1],
-                                  pers_name[0],
-                                  pers_role])
-
+                                 item_id,
+                                 pers_name[1],
+                                 pers_name[0],
+                                 pers_role,
+                                 pers_org_id])
+                ext_id = 'external'+str(ext_table_i)
+                pub_ext_nodes.append([ext_id,
+                                     pers_name[1],
+                                     pers_name[0]])
                 pub_ext_edges.append([item_id,
-                                  str(ext_table_i)])
+                                      ext_id])
+
+                if pers_org_id:
+                    # pub_ext_org--coop_edges.append([item_id,pers_org_id])
+                    pub_ext_org_edges.append([ext_id,pers_org_id])
+
+                    if pers_org_id not in all_ext_orgs:
+                        pub_ext_org_nodes.append([pers_org_id,
+                                                  pers_org_name,
+                                                  ";".join(pers_org_id_path),
+                                                  pers_org_address])
+                        all_ext_orgs.append(pers_org_id)
+
                 ext_table_i += 1
+
 
         # ORGANIZATIONS
 
@@ -197,6 +230,7 @@ for path in data_paths:
         src_title_genre = extract.sources_titles_genres_from_item(record)
         src_pers = extract.sources_persons_id_from_item(record)
         src_pers_affil = extract.sources_persons_affiliations_from_item(record)
+        src_orgs = extract.sources_organizations_from_item(record)
 
         for i, title_genre in enumerate(src_title_genre):
             src_title, src_genre = title_genre
@@ -211,7 +245,7 @@ for path in data_paths:
                               src_id_type])
 
             for j, src_pers_data in enumerate(src_pers[i]):
-                src_pers_id,src_pers_name,src_pers_gname,src_pers_role,src_pers_id_type = src_pers_data
+                src_pers_id,src_pers_gname,src_pers_name,src_pers_role,src_pers_id_type = src_pers_data
                 src_pers_org_id,src_pers_org_idpath,src_pers_org_name,src_pers_org_address = src_pers_affil[i][j][0]\
                 if src_pers_affil[i][j] else ("","","","")
                 if src_pers_id:
@@ -221,6 +255,7 @@ for path in data_paths:
                                           src_pers_name,
                                           src_pers_gname,
                                           src_pers_role,
+                                          src_pers_id,
                                           src_pers_id_type,
                                           src_pers_org_id])
 
@@ -233,8 +268,8 @@ for path in data_paths:
                         all_src_pers.append(src_pers_id)
 
                     if src_pers_org_id:
-
-                        pub_src_auth_org_edges.append([item_id,src_pers_org_id])
+                        # pub_src_auth_org--coop_edges.append([item_id,src_pers_org_id])
+                        pub_src_auth_org_edges.append([src_pers_id,src_pers_org_id])
                         if src_pers_org_id not in all_src_pers_orgs:
                             pub_src_auth_org_nodes.append([src_pers_org_id,
                                                            src_pers_org_name,
@@ -249,9 +284,40 @@ for path in data_paths:
                                           str(src_table_i),
                                           src_pers_name,
                                           src_pers_gname,
-                                          src_pers_role])
-                    pub_src_ext_edges.append([item_id,str(src_ext_table_i)])
+                                          src_pers_role,
+                                          src_pers_org_id])
+                    src_ext_id = 'src_external' + str(src_ext_table_i)
+                    pub_src_ext_nodes.append([src_ext_id,src_pers_name,src_pers_gname])
+                    pub_src_ext_edges.append([item_id,src_ext_id])
+
+                    if src_pers_org_id:
+                        # pub_src_ext_org--coop_edges.append([item_id,src_pers_org_id])
+                        pub_src_ext_org_edges.append([src_ext_id,src_pers_org_id])
+                        if src_pers_org_id not in all_src_ext_orgs:
+                            pub_src_ext_org_nodes.append([src_pers_org_id,
+                                                          src_pers_org_name,
+                                                          ";".join(src_pers_org_idpath),
+                                                          src_pers_org_address])
+                            all_src_ext_orgs.append(src_pers_org_id)
+
                     src_ext_table_i += 1
+
+            for j, organization in enumerate(src_orgs[i]):
+                src_org_role = extract.role_from_creator(organization)
+                src_org_id = extract.organizations_identifier_from_creator(organization)
+                src_org_name = extract.organizations_name_from_creator(organization)
+                src_org_table.append([str(src_org_table_i),
+                                      item_id,
+                                      str(src_table_i),
+                                      src_org_name,
+                                      src_org_role,
+                                      src_org_id])
+                if src_org_id:
+                    pub_src_org_edges.append([item_id, src_org_id])
+                    if src_org_id not in all_src_orgs:
+                        pub_src_org_nodes.append([src_org_id, src_org_name])
+                        all_src_orgs.append(src_org_id)
+                src_org_table_i += 1
 
             src_table_i += 1
 
@@ -269,20 +335,33 @@ utils.write_csv(TABLES_DIR + "publications_authors.csv", aut_table)
 utils.write_csv(TABLES_DIR + "publications_externals.csv", ext_table)
 utils.write_csv(TABLES_DIR + "publications_organizations.csv", org_table)
 utils.write_csv(TABLES_DIR + "publications_sources_authors.csv", src_aut_table)
+utils.write_csv(TABLES_DIR + "publications_sources_externals.csv", src_ext_table)
+utils.write_csv(TABLES_DIR + "publications_sources_organizations.csv", src_org_table)
 
 utils.write_csv(GRAPH_DIR + "items--pub-nodes.csv", pub_nodes)
 utils.write_csv(GRAPH_DIR + "items--ous-nodes.csv", pub_org_nodes)
 utils.write_csv(GRAPH_DIR + "items--pers-nodes.csv", pub_auth_nodes)
+utils.write_csv(GRAPH_DIR + "items--ext-nodes.csv", pub_ext_nodes)
 utils.write_csv(GRAPH_DIR + "items--pers-ous-nodes.csv", pub_auth_org_nodes)
+utils.write_csv(GRAPH_DIR + "items--ext-ous-nodes.csv", pub_ext_org_nodes)
+
+utils.write_csv(GRAPH_DIR + "items--src-ous-nodes.csv", pub_src_org_nodes)
 utils.write_csv(GRAPH_DIR + "items--src-pers-nodes.csv", pub_src_auth_nodes)
+utils.write_csv(GRAPH_DIR + "items--src-ext-nodes.csv", pub_src_ext_nodes)
 utils.write_csv(GRAPH_DIR + "items--src-pers-ous-nodes.csv", pub_src_auth_org_nodes)
+utils.write_csv(GRAPH_DIR + "items--src-ext-ous-nodes.csv", pub_src_ext_org_nodes)
 
 utils.write_csv(GRAPH_DIR + "items--pub-ous-edges.csv", pub_org_edges)
 utils.write_csv(GRAPH_DIR + "items--pub-pers-edges.csv", pub_auth_edges)
-utils.write_csv(GRAPH_DIR + "items--pub-pers-ext-edges.csv", pub_ext_edges)
+utils.write_csv(GRAPH_DIR + "items--pub-ext-edges.csv", pub_ext_edges)
 utils.write_csv(GRAPH_DIR + "items--pers-ous-edges.csv", pub_auth_org_edges)
+utils.write_csv(GRAPH_DIR + "items--ext-ous-edges.csv", pub_ext_org_edges)
+
+utils.write_csv(GRAPH_DIR + "items--src-ous-edges.csv", pub_src_org_edges)
 utils.write_csv(GRAPH_DIR + "items--src-pers-edges.csv", pub_src_auth_edges)
+utils.write_csv(GRAPH_DIR + "items--src-ext-edges.csv", pub_src_ext_edges)
 utils.write_csv(GRAPH_DIR + "items--src-pers-ous-edges.csv", pub_src_auth_org_edges)
+utils.write_csv(GRAPH_DIR + "items--src-ext-ous-edges.csv", pub_src_ext_org_edges)
 
 log.close()
 sys.stdout = stdout
