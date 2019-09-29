@@ -1,39 +1,25 @@
 import os
 import sys
+import time
 
-print("console output is redirected to data_items.log ...")
+from pybman import utils
+from pybman import DataSet
+# from pybman import extract
+
+from . import utils as extract
+from ..utils.clean import clean_title
+from ..utils.paths import LOG_DIR, GRAPH_DIR, TABLES_DIR
+
+print("start extraction of items!")
+
+print("console output is redirected to items.log ...")
 
 stdout = sys.stdout
 
-log = open("log/data_items.log", "w+")
+log = open(LOG_DIR, "items.log", "w+")
 sys.stdout = log
 
-from pybman import utils
-from pybman import LocalData
-from pybman import DataSet
-# from pybman import extract
-from . import utils_data as extract
-
-from .utils_clean import clean_title
-from .utils_path import BASE_DIR
-
-OUT_DIR = '../data/'
-GRAPH_DIR = OUT_DIR + 'graph/'
-TABLES_DIR = OUT_DIR + 'tables/'
-
-ITEMS_DIR = BASE_DIR + 'items/'
-# ITEMS_DIR = BASE_DIR + 'items-sample/'
-
-print("start processing data!")
-
-data_paths = []
-
-for root, dirs, files in os.walk(ITEMS_DIR):
-    for name in files:
-        if name.endswith(".json"):
-            data_paths.append(os.path.realpath(os.path.join(root, name)))
-
-ld = LocalData(base_dir=ITEMS_DIR)
+from ..utils.local import ld, data_paths
 
 items_total = []
 
@@ -87,6 +73,10 @@ src_table_i = 1
 src_aut_table_i = 1
 src_ext_table_i = 1
 src_org_table_i = 1
+
+print("start processing data!")
+
+start_time = time.time()
 
 for path in data_paths:
     
@@ -363,5 +353,11 @@ utils.write_csv(GRAPH_DIR + "items--src-ext-edges.csv", pub_src_ext_edges)
 utils.write_csv(GRAPH_DIR + "items--src-pers-ous-edges.csv", pub_src_auth_org_edges)
 utils.write_csv(GRAPH_DIR + "items--src-ext-ous-edges.csv", pub_src_ext_org_edges)
 
+finished = time.time()
+
+print("finished extraction after %s min!" % round((finished - start_time)/60 , 2))
+
 log.close()
 sys.stdout = stdout
+
+print("finished extraction after %s min!" % round((finished - start_time)/60 , 2))
