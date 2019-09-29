@@ -2,12 +2,14 @@ import os
 import sys
 import time
 
-LOG_DIR = './log/'
+from ..utils.paths import LOG_DIR
+
+print("start extraction of titles!")
 
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
-print("console output is redirected to log/titles.log ...")
+print("console output is redirected to titles.log ...")
 stdout = sys.stdout
 log = open(LOG_DIR + "titles.log", "w+")
 sys.stdout = log
@@ -37,7 +39,9 @@ for g in genres:
 done = time.time()
 print("----------------------------------------")
 print("finished extraction on",time.ctime(done))
-print("after", round(done - start, 2), "seconds!")
+print("after", round((done - start) / 60, 2), "minutes!")
 
 log.close()
 sys.stdout = stdout
+
+print("finished extraction after %s min!" % round((done - start)/60, 2))
