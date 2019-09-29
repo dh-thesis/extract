@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 rm -rf log
 mkdir log
+rm -rf ../data/count
+mkdir ../data/count
 rm -rf ../data/graph
 mkdir ../data/graph
 rm -rf ../data/tables
 mkdir ../data/tables
+rm -rf ../data/titles
+mkdir ../data/titles
 source env/bin/activate
-python -m src
+echo "start extraction!"
+python -m src.graph
+python -m src.items
+python -m src.stats
+python -m src.titles
+echo "finished extraction!"
 deactivate
