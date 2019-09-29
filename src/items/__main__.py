@@ -16,7 +16,7 @@ print("console output is redirected to items.log ...")
 
 stdout = sys.stdout
 
-log = open(LOG_DIR, "items.log", "w+")
+log = open(LOG_DIR + "items.log", "w+")
 sys.stdout = log
 
 from ..utils.local import ld, data_paths
