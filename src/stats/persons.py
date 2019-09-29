@@ -1,15 +1,24 @@
 import os
 import csv
+import sys
 import time
-import logging
 
 from pybman import utils
 from pybman import DataSet
 
-from ..utils.local import ld
-from ..utils.paths import MPIS_DIR, STATS_OUT
+from ..utils.paths import LOG_DIR, MPIS_DIR, STATS_OUT
 
-logging.basicConfig(filename='log/stats_pers.log', level=logging.INFO)
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+print("console output is redirected to count_persons.log ...")
+
+stdout = sys.stdout
+
+log = open(LOG_DIR + "count_persons.log", "w+")
+sys.stdout = log
+
+from ..utils.local import ld
 
 PERS_STATS = os.path.join(STATS_OUT, 'persons/')
 
@@ -24,20 +33,20 @@ mpis = utils.read_json(MPIS_DIR + 'mapped/ous_mpi.json')
 
 print("start processing!")
 
-logging.info("start processing!")
 start_time = time.time()
 
 for mpi in mpis:
     if not mpi in ous_ctx:
-        logging.info(mpis[mpi]+ " has no contexts!")
-        logging.info("")
+        
+        print(mpis[mpi]+ " has no contexts!")
+        print("")
         continue
 
-    logging.info("processing "+mpis[mpi]+"...")
+    print("processing "+mpis[mpi]+"...")
     stats = {}
     mpi_ctxs = ous_ctx[mpi]
     for mpi_ctx in mpi_ctxs:
-        logging.info("extracting " +  mpi_ctx + " ...")
+        print("extracting " +  mpi_ctx + " ...")
 
         all = ld.get_data(mpi_ctx)[0]
 
@@ -45,7 +54,7 @@ for mpi in mpis:
         data_set = DataSet(data_id=all.idx+"_released", raw=all.get_items_released())
 
         if not data_set.records:
-            logging.info(mpi_ctx+ " has no records!")
+            print(mpi_ctx+ " has no records!")
             continue
 
         authors = data_set.get_creators_data() # only CoNE related authors!
@@ -53,7 +62,7 @@ for mpi in mpis:
         a = list(authors.keys())
         a.sort()
 
-        logging.info(str(len(a)) + " CoNE persons to process ...")
+        print(str(len(a)) + " CoNE persons to process ...")
 
         records = 0
 
@@ -64,7 +73,7 @@ for mpi in mpis:
                 stats[i] = len(authors[i])
             records += len(authors[i])
 
-        logging.info("... with " + str(records) + " attributed records!")
+        print("... with " + str(records) + " attributed records!")
 
     if not stats:
         continue
@@ -78,7 +87,7 @@ for mpi in mpis:
 
     path = PERS_STATS + mpi + '_pers_pub.csv'
 
-    logging.info("write stats to file: "+path)
+    print("write stats to file: "+path)
 
     with open(path,'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter='\t', quotechar='', quoting=csv.QUOTE_NONE) # , quoting=csv.QUOTE_MINIMAL
@@ -86,8 +95,10 @@ for mpi in mpis:
         for i in range(0, total):
             csv_writer.writerow([idx[i],num_pub[i]])
 
-    logging.info("finished "+mpis[mpi]+"!")
-    logging.info("")
+    print("finished "+mpis[mpi]+"!")
+    print("")
     
 print("finished processing after %s sec!" % round(time.time() - start_time, 2))
-logging.info("finished processing after %s sec!" % round(time.time() - start_time, 2))
+
+log.close()
+sys.stdout = stdout

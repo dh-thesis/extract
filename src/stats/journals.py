@@ -1,15 +1,25 @@
 import os
+import sys
 import csv
 import time
-import logging
 
 from pybman import utils
 from pybman import DataSet
 
-from ..utils.local import ld
-from ..utils.paths import MPIS_DIR, STATS_OUT
+from ..utils.paths import LOG_DIR, MPIS_DIR, STATS_OUT
 
-logging.basicConfig(filename='log/stats_jour.log', level=logging.INFO)
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+print("console output is redirected to count_journals.log ...")
+
+stdout = sys.stdout
+
+log = open(LOG_DIR + "count_journals.log", "w+")
+
+sys.stdout = log
+
+from ..utils.local import ld
 
 JOUR_STATS = STATS_OUT + 'journals/'
 
@@ -23,16 +33,14 @@ mpis.sort()
 mpis = utils.read_json(MPIS_DIR + 'mapped/ous_mpi.json')
 
 print("start processing!")
-
-logging.info("start processing!")
 start_time = time.time()
 
 for mpi in mpis:
     if not mpi in ous_ctx:
-        logging.info(mpis[mpi]+ " has no contexts!")
-        logging.info("")
+        print(mpis[mpi]+ " has no contexts!")
+        print("")
         continue
-    logging.info("processing "+mpis[mpi]+"...")
+    print("processing "+mpis[mpi]+"...")
 
     articles = []
     journals = {}
@@ -41,7 +49,7 @@ for mpi in mpis:
 
     mpi_ctxs = ous_ctx[mpi]
     for mpi_ctx in mpi_ctxs:
-        logging.info("extracting " +  mpi_ctx + " ...")
+        print("extracting " +  mpi_ctx + " ...")
 
         all = ld.get_data(mpi_ctx)[0]
 
@@ -49,10 +57,10 @@ for mpi in mpis:
         data_set = DataSet(data_id=all.idx+"_released", raw=all.get_items_released())
 
         if not data_set.records:
-            logging.info(mpi_ctx+ " has no records!")
+            print(mpi_ctx+ " has no records!")
             continue
 
-        logging.info(str(data_set.num) + " records to process...")
+        print(str(data_set.num) + " records to process...")
 
         for record in data_set.records:
             data = record['data']
@@ -73,17 +81,17 @@ for mpi in mpis:
                             else:
                                 journals[source['title']] = 1
                         else:
-                            logging.info(article['data']['objectId'] + " has journal as source without title!")
+                            print(article['data']['objectId'] + " has journal as source without title!")
                             continue
                     if jour:
                         break
                 if not jour:
                     nojour += 1
             else:
-                logging.info("found article " + article['data']['objectId'] + " without any source!")
+                print("found article " + article['data']['objectId'] + " without any source!")
 
-    logging.info('found '+str(counter)+' articles with journals as source')
-    logging.info('found '+str(nojour)+' articles without a journal as souce')
+    print('found '+str(counter)+' articles with journals as source')
+    print('found '+str(nojour)+' articles without a journal as souce')
 
     journals = sorted(journals.items(), key=lambda x: x[1], reverse=True)
 
@@ -91,7 +99,7 @@ for mpi in mpis:
 
     path = JOUR_STATS + mpi + '_jour_art.csv'
 
-    logging.info("write stats to file: "+path)
+    print("write stats to file: "+path)
 
     with open(path,'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)  # quoting=csv.QUOTE_NONE
@@ -103,8 +111,10 @@ for mpi in mpis:
             jour = utils.clean_string(jour)
             csv_writer.writerow([jour,art])
 
-    logging.info("finished "+mpis[mpi]+"!")
-    logging.info("")
+    print("finished "+mpis[mpi]+"!")
+    print("")
 
 print("finished processing after %s sec!" % round(time.time() - start_time, 2))
-logging.info("finished processing after %s sec!" % round(time.time() - start_time, 2))
+
+log.close()
+sys.stdout = stdout

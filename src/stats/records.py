@@ -1,12 +1,25 @@
 import os
+import sys
 import csv
 import time
 
 from pybman import utils
 from pybman import DataSet
 
+from ..utils.paths import LOG_DIR, MPIS_DIR, STATS_OUT
+
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+print("console output is redirected to count_records.log ...")
+
+stdout = sys.stdout
+
+log = open(LOG_DIR + "count_records.log", "w+")
+sys.stdout = log
+
 from ..utils.local import ld
-from ..utils.paths import MPIS_DIR, STATS_OUT
+
 
 REC_STATS = os.path.join(STATS_OUT, 'records/')
 
@@ -67,3 +80,6 @@ with open(path,'w', newline='') as csv_file:
         ou, pub = stats[i]
         mpi = mpis[ou].replace(" (Hannover)", "").replace(" (Greifswald)","")
         csv_writer.writerow([mpi,pub])
+
+log.close()
+sys.stdout = stdout
