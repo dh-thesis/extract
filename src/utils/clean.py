@@ -6,9 +6,10 @@ def clean_title(title):
     title = title.replace("\r", " ")
     title = title.replace(",", " ")
     title = title.replace('"', "")
-    title = title.replace("<sup>", "")
-    title = title.replace("</sup>", "")
-    title = title.replace("</sub>", "")
-    title = title.replace("<sub>", "")
-    title = re.sub(' +', ' ', title)
+    title = re.sub(r"<.*?>", "", title)  # html tags (e.g. <sub>, </sub>, ...)
+    title = re.sub(r"([^\s\S^$]+)?\$.+?\$-?([^\s^$^\S]+)?", " ", title) # math expressions
+    title = re.sub(r"[^\S]\\[^\s]+", "", title) # latex commands (e.g. \bold)
+    title = re.sub(r"[^\s]+\\[^\s]+", "", title) # latex special characters
+    title = re.sub(r"\s+", " ", title) # multiple whitespaces
+    title.strip()
     return title
