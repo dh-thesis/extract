@@ -10,16 +10,16 @@ from ..utils.local import ld
 from ..utils.paths import DATA_DIR, MPIS_DIR, PURE_DIR, TITLES_OUT
 
 ALL_LANG = os.path.join(TITLES_OUT, 'all-lang/')
-ALL_LANG_YEARS = os.path.join(TITLES_OUT, 'all-lang-years/')
-ALL_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'all-lang-years-genre/')
+ALL_LANG_YEARS = os.path.join(TITLES_OUT, 'all-lang-year/')
+ALL_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'all-lang-year-genre/')
 
-MPI_LANG = os.path.join(TITLES_OUT, 'mpis-eng/')
-MPI_LANG_YEARS = os.path.join(TITLES_OUT, 'mpis-eng-years/')
-MPI_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'mpis-eng-years-genre/')
+MPI_LANG = os.path.join(TITLES_OUT, 'mpi-lang/')
+MPI_LANG_YEARS = os.path.join(TITLES_OUT, 'mpi-lang-years/')
+MPI_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'mpi-lang-year-genre/')
 
-CAT_LANG = os.path.join(TITLES_OUT, 'cats-lang/')
-CAT_LANG_YEARS = os.path.join(TITLES_OUT, 'cats-lang-years/')
-CAT_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'cats-lang-years-genre/')
+CAT_LANG = os.path.join(TITLES_OUT, 'cat-lang/')
+CAT_LANG_YEARS = os.path.join(TITLES_OUT, 'cat-lang-year/')
+CAT_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'cat-lang-year-genre/')
 
 # TAG_LANG = os.path.join(TITLES_OUT, 'tags-lang/')
 # TAG_LANG_YEARS = os.path.join(TITLES_OUT, 'tags-lang-years/')
