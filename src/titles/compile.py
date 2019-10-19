@@ -21,10 +21,6 @@ CAT_LANG = os.path.join(TITLES_OUT, 'cat-lang/')
 CAT_LANG_YEARS = os.path.join(TITLES_OUT, 'cat-lang-year/')
 CAT_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'cat-lang-year-genre/')
 
-# TAG_LANG = os.path.join(TITLES_OUT, 'tags-lang/')
-# TAG_LANG_YEARS = os.path.join(TITLES_OUT, 'tags-lang-years/')
-# TAG_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'tags-lang-years/')
-
 YEARS = list(range(2000, 2020))
 
 langs = utils.read_json(PURE_DIR + "lang/collection.json")
