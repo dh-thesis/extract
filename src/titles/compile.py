@@ -8,7 +8,7 @@ from pybman import DataSet
 
 from .preprocess import clean
 from ..utils.local import ld
-from ..utils.paths import MPIS_DIR, PURE_DIR, TITLES_OUT
+from ..utils.paths import DATA_DIR, MPIS_DIR, PURE_DIR, TITLES_OUT
 
 MPI_LANG = os.path.join(TITLES_OUT,'mpis-eng/')
 MPI_LANG_YEARS = os.path.join(TITLES_OUT,'mpis-eng-years/')
@@ -19,7 +19,8 @@ YEARS = list(range(2000,2020))
 
 langs = utils.read_json(PURE_DIR + "lang/collection.json")
 cat_ous = utils.read_json(MPIS_DIR + 'mapped/cat_ous.json')
-ous_ctx = utils.read_json(MPIS_DIR + 'mapped/ous_ctx.json')
+# ous_ctx = utils.read_json(MPIS_DIR + 'mapped/ous_ctx.json')
+ous_ctx = utils.read_json(DATA_DIR + 'base/ctx_sel.json')
 cats = list(cat_ous.keys())
 mpis = list(ous_ctx.keys())
 cats.sort()
