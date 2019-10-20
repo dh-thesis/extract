@@ -6,6 +6,7 @@ from pybman import extract
 from pybman import DataSet
 
 from .preprocess import clean
+
 from ..utils.local import ld
 from ..utils.paths import DATA_DIR, MPIS_DIR, PURE_DIR, TITLES_OUT
 
@@ -14,7 +15,7 @@ ALL_LANG_YEARS = os.path.join(TITLES_OUT, 'all-lang-year/')
 ALL_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'all-lang-year-genre/')
 
 MPI_LANG = os.path.join(TITLES_OUT, 'mpi-lang/')
-MPI_LANG_YEARS = os.path.join(TITLES_OUT, 'mpi-lang-years/')
+MPI_LANG_YEARS = os.path.join(TITLES_OUT, 'mpi-lang-year/')
 MPI_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'mpi-lang-year-genre/')
 
 CAT_LANG = os.path.join(TITLES_OUT, 'cat-lang/')
@@ -145,9 +146,6 @@ def titles_from_lang_by_year(lang_id='eng'):
 
 
 def titles_from_lang_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
-    """
-    TO DO
-    """
     if not os.path.exists(ALL_LANG_YEARS_GENRE):
         os.makedirs(ALL_LANG_YEARS_GENRE)
     print("start extraction!")
@@ -157,10 +155,10 @@ def titles_from_lang_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
         init[str(year)] = True
     for mpi in mpis:
         print("")
-        print("processing", mpi,"...")
+        print("processing", mpi, "...")
         mpi_ctxs = ous_ctx[mpi]
         for mpi_ctx in mpi_ctxs:
-            print("extracting", mpi_ctx,"...")
+            print("extracting", mpi_ctx, "...")
             titles_lang_years = titles_from_ctx_in_language_and_genre_by_year(mpi_ctx, genre=genre, lang_id=lang_id)
             out_prefix = ALL_LANG_YEARS_GENRE + lang_id + '_' + genre + '_'
             for year in YEARS:
