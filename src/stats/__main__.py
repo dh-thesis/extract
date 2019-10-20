@@ -1,11 +1,15 @@
 import time
 
+from . import journals
+from . import persons
+from . import records
+
 print("start extraction of stats!")
 
 start_time = time.time()
 
-from .journals import *
-from .persons import *
-from .records import *
+journals.routine()
+persons.routine()
+records.routine()
 
 print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
