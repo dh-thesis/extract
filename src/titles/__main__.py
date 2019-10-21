@@ -83,4 +83,4 @@ print("----------------------------------------")
 log.close()
 sys.stdout = stdout
 
-print("finished after %s min!" % round((done - start)/60, 2))
+print("all done!")
