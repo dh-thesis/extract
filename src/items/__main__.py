@@ -1,4 +1,3 @@
-import os
 import sys
 import time
 
@@ -23,39 +22,39 @@ from ..utils.local import ld, data_paths
 
 items_total = []
 
-pub_table = [["Id","Label","Year","Genre","Lang","Identifier","IdentifierType","Context"]]
-org_table = [["Id","Item","Label","Role","Identifier"]]
-aut_table = [["Id","Item","Label","givenName","Role","Identifier","IdentiferType","Organization"]]
-ext_table = [["Id","Item","Label","givenName","Role","Organization"]]
-src_table = [["Id","Item","Label","Genre","Identifier","IdentiferType"]]
-src_aut_table = [["Id","Item","Source","Label","givenName","Role","Identifier","IdentiferType","Organization"]]
-src_ext_table = [["Id","Item","Source","Label","givenName","Role","Organization"]]
-src_org_table = [["Id","Item","Source","Label","Role","Identifier"]]
+pub_table = [["Id", "Label", "Year", "Genre", "Lang", "Identifier", "IdentifierType", "Context"]]
+org_table = [["Id", "Item", "Label", "Role", "Identifier"]]
+aut_table = [["Id", "Item", "Label", "givenName", "Role", "Identifier", "IdentiferType", "Organization"]]
+ext_table = [["Id", "Item", "Label", "givenName", "Role", "Organization"]]
+src_table = [["Id", "Item", "Label", "Genre", "Identifier", "IdentiferType"]]
+src_aut_table = [["Id", "Item", "Source", "Label", "givenName", "Role", "Identifier", "IdentiferType", "Organization"]]
+src_ext_table = [["Id", "Item", "Source", "Label", "givenName", "Role", "Organization"]]
+src_org_table = [["Id", "Item", "Source", "Label", "Role", "Identifier"]]
 
-pub_nodes = [["Id","Label"]]
-pub_org_nodes = [["Id","Label"]]
-pub_auth_nodes = [["Id","Label","givenName","IdType"]]
-pub_ext_nodes = [["Id","Label","givenName"]]
-pub_auth_org_nodes = [["Id","Label","IdentifierPath","Address"]]
-pub_ext_org_nodes = [["Id","Label","IdentifierPath","Address"]]
+pub_nodes = [["Id", "Label"]]
+pub_org_nodes = [["Id", "Label"]]
+pub_auth_nodes = [["Id", "Label", "givenName", "IdType"]]
+pub_ext_nodes = [["Id", "Label", "givenName"]]
+pub_auth_org_nodes = [["Id", "Label", "IdentifierPath", "Address"]]
+pub_ext_org_nodes = [["Id", "Label", "IdentifierPath", "Address"]]
 
-pub_src_org_nodes = [["Id","Label"]]
-pub_src_ext_nodes = [["Id","Label","givenName"]]
-pub_src_auth_nodes = [["Id","Label","givenName","IdType"]]
-pub_src_auth_org_nodes = [["Id","Label","IdentifierPath","Address"]]
-pub_src_ext_org_nodes = [["Id","Label","IdentifierPath","Address"]]
+pub_src_org_nodes = [["Id", "Label"]]
+pub_src_ext_nodes = [["Id", "Label", "givenName"]]
+pub_src_auth_nodes = [["Id", "Label", "givenName", "IdType"]]
+pub_src_auth_org_nodes = [["Id", "Label", "IdentifierPath", "Address"]]
+pub_src_ext_org_nodes = [["Id", "Label", "IdentifierPath", "Address"]]
 
-pub_org_edges = [["Source","Target"]]
-pub_ext_edges = [["Source","Target"]]
-pub_auth_edges = [["Source","Target"]]
-pub_auth_org_edges = [["Source","Target"]]
-pub_ext_org_edges = [["Source","Target"]]
+pub_org_edges = [["Source", "Target"]]
+pub_ext_edges = [["Source", "Target"]]
+pub_auth_edges = [["Source", "Target"]]
+pub_auth_org_edges = [["Source", "Target"]]
+pub_ext_org_edges = [["Source", "Target"]]
 
-pub_src_org_edges = [["Source","Target"]]
-pub_src_auth_edges = [["Source","Target"]]
-pub_src_ext_edges = [["Source","Target"]]
-pub_src_auth_org_edges = [["Source","Target"]]
-pub_src_ext_org_edges = [["Source","Target"]]
+pub_src_org_edges = [["Source", "Target"]]
+pub_src_auth_edges = [["Source", "Target"]]
+pub_src_ext_edges = [["Source", "Target"]]
+pub_src_auth_org_edges = [["Source", "Target"]]
+pub_src_ext_org_edges = [["Source", "Target"]]
 
 all_pers = []
 all_orgs = []
@@ -79,19 +78,18 @@ print("start processing data!")
 start_time = time.time()
 
 for path in data_paths:
-    
-    
+
     idx = path.split("/")[-1].replace(".json", "")
 
     print("")
-    print("processing", idx,"...")
+    print("processing", idx, "...")
 
     all = ld.get_data(idx)[0]
 
     # consider only released items
     data_set = DataSet(data_id=all.idx+"_released", raw=all.get_items_released())
 
-    print(data_set.num,"records to process...")
+    print(data_set.num, "records to process...")
 
     # loop over every record
     for record in data_set.records:
@@ -132,9 +130,9 @@ for path in data_paths:
             pers_role = extract.role_from_creator(persons)
             pers_name = extract.persons_name_from_creator(persons)
             pers_id, pers_id_type = extract.persons_id_from_creator(persons)
-            pers_org_id,pers_org_id_path,pers_org_name,\
-            pers_org_address = extract.persons_affiliation_from_creator(persons)[0]\
-            if extract.persons_affiliation_from_creator(persons) else ("","","","")
+            pers_org_id, pers_org_id_path, pers_org_name,\
+                pers_org_address = extract.persons_affiliation_from_creator(persons)[0]\
+                if extract.persons_affiliation_from_creator(persons) else ("", "", "", "")
             if pers_id:
                 aut_table.append([str(aut_table_i),
                                   item_id,
@@ -146,7 +144,7 @@ for path in data_paths:
                                   pers_org_id])
 
                 aut_table_i += 1
-                pub_auth_edges.append([item_id,pers_id])
+                pub_auth_edges.append([item_id, pers_id])
 
                 if pers_id not in all_pers:
                     pub_auth_nodes.append([pers_id,
@@ -157,7 +155,7 @@ for path in data_paths:
 
                 if pers_org_id:
                     # pub_auth_org--coop_edges.append([item_id,pers_org_id])
-                    pub_auth_org_edges.append([pers_id,pers_org_id])
+                    pub_auth_org_edges.append([pers_id, pers_org_id])
 
                     if pers_org_id not in all_pers_orgs:
                         pub_auth_org_nodes.append([pers_org_id,
@@ -168,21 +166,21 @@ for path in data_paths:
 
             else:
                 ext_table.append([str(ext_table_i),
-                                 item_id,
-                                 pers_name[1],
-                                 pers_name[0],
-                                 pers_role,
-                                 pers_org_id])
+                                  item_id,
+                                  pers_name[1],
+                                  pers_name[0],
+                                  pers_role,
+                                  pers_org_id])
                 ext_id = 'external'+str(ext_table_i)
                 pub_ext_nodes.append([ext_id,
-                                     pers_name[1],
-                                     pers_name[0]])
+                                      pers_name[1],
+                                      pers_name[0]])
                 pub_ext_edges.append([item_id,
                                       ext_id])
 
                 if pers_org_id:
                     # pub_ext_org--coop_edges.append([item_id,pers_org_id])
-                    pub_ext_org_edges.append([ext_id,pers_org_id])
+                    pub_ext_org_edges.append([ext_id, pers_org_id])
 
                     if pers_org_id not in all_ext_orgs:
                         pub_ext_org_nodes.append([pers_org_id,
@@ -192,7 +190,6 @@ for path in data_paths:
                         all_ext_orgs.append(pers_org_id)
 
                 ext_table_i += 1
-
 
         # ORGANIZATIONS
 
@@ -206,9 +203,9 @@ for path in data_paths:
                               org_role,
                               org_id])
             if org_id:
-                pub_org_edges.append([item_id,org_id])
+                pub_org_edges.append([item_id, org_id])
                 if org_id not in all_orgs:
-                    pub_org_nodes.append([org_id,org_name])
+                    pub_org_nodes.append([org_id, org_name])
                     all_orgs.append(org_id)
             org_table_i += 1
 
@@ -235,9 +232,11 @@ for path in data_paths:
                               src_id_type])
 
             for j, src_pers_data in enumerate(src_pers[i]):
-                src_pers_id,src_pers_gname,src_pers_name,src_pers_role,src_pers_id_type = src_pers_data
-                src_pers_org_id,src_pers_org_idpath,src_pers_org_name,src_pers_org_address = src_pers_affil[i][j][0]\
-                if src_pers_affil[i][j] else ("","","","")
+                src_pers_id, src_pers_gname, src_pers_name,\
+                  src_pers_role, src_pers_id_type = src_pers_data
+                src_pers_org_id, src_pers_org_idpath,\
+                  src_pers_org_name, src_pers_org_address = src_pers_affil[i][j][0]\
+                    if src_pers_affil[i][j] else ("", "", "", "")
                 if src_pers_id:
                     src_aut_table.append([str(src_aut_table_i),
                                           item_id,
@@ -249,17 +248,17 @@ for path in data_paths:
                                           src_pers_id_type,
                                           src_pers_org_id])
 
-                    pub_src_auth_edges.append([item_id,src_pers_id])
+                    pub_src_auth_edges.append([item_id, src_pers_id])
                     if src_pers_id not in all_src_pers:
                         pub_src_auth_nodes.append([src_pers_id,
-                                               src_pers_name,
-                                               src_pers_gname,
-                                               src_pers_id_type])
+                                                   src_pers_name,
+                                                   src_pers_gname,
+                                                   src_pers_id_type])
                         all_src_pers.append(src_pers_id)
 
                     if src_pers_org_id:
                         # pub_src_auth_org--coop_edges.append([item_id,src_pers_org_id])
-                        pub_src_auth_org_edges.append([src_pers_id,src_pers_org_id])
+                        pub_src_auth_org_edges.append([src_pers_id, src_pers_org_id])
                         if src_pers_org_id not in all_src_pers_orgs:
                             pub_src_auth_org_nodes.append([src_pers_org_id,
                                                            src_pers_org_name,
@@ -277,12 +276,12 @@ for path in data_paths:
                                           src_pers_role,
                                           src_pers_org_id])
                     src_ext_id = 'src_external' + str(src_ext_table_i)
-                    pub_src_ext_nodes.append([src_ext_id,src_pers_name,src_pers_gname])
-                    pub_src_ext_edges.append([item_id,src_ext_id])
+                    pub_src_ext_nodes.append([src_ext_id, src_pers_name, src_pers_gname])
+                    pub_src_ext_edges.append([item_id, src_ext_id])
 
                     if src_pers_org_id:
                         # pub_src_ext_org--coop_edges.append([item_id,src_pers_org_id])
-                        pub_src_ext_org_edges.append([src_ext_id,src_pers_org_id])
+                        pub_src_ext_org_edges.append([src_ext_id, src_pers_org_id])
                         if src_pers_org_id not in all_src_ext_orgs:
                             pub_src_ext_org_nodes.append([src_pers_org_id,
                                                           src_pers_org_name,
@@ -312,10 +311,10 @@ for path in data_paths:
             src_table_i += 1
 
 print("")
-print("processed",len(items_total),"records from",len(data_paths),"collections!")
-print("found",len(src_table)-1,"sources!")
-print("found",aut_table_i,"internal authorships!")
-print("found",ext_table_i,"external authorships!")
+print("processed", len(items_total), "records from", len(data_paths), "collections!")
+print("found", len(src_table)-1, "sources!")
+print("found", aut_table_i, "internal authorships!")
+print("found", ext_table_i, "external authorships!")
 
 print("")
 
