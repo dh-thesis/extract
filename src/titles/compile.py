@@ -16,6 +16,7 @@ ALL_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'all-lang-year-genre/')
 
 MPI_LANG = os.path.join(TITLES_OUT, 'mpi-lang/')
 MPI_LANG_YEARS = os.path.join(TITLES_OUT, 'mpi-lang-year/')
+MPI_LANG_GENRE = os.path.join(TITLES_OUT, 'mpi-lang-genre/')
 MPI_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'mpi-lang-year-genre/')
 
 CAT_LANG = os.path.join(TITLES_OUT, 'cat-lang/')
@@ -67,13 +68,33 @@ def titles_from_ctx_in_language_by_year(ctx_id='ctx_1542176', lang_id='eng'):
         return {}
 
 
+def titles_from_ctx_in_language_and_genre(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE'):
+    total = ld.get_data(ctx_id)[0]
+    data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
+    genres = data_set.get_genre_data()
+    if genre in genres:
+        genre_data = DataSet(data_id=ctx_id+genre, raw=genres[genre])
+        lang_data = genre_data.get_languages_data()
+        if lang_id in lang_data:
+            lang_records = lang_data[lang_id]
+            lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
+            lang_titles = extract.titles_from_records(lang_data.records)
+            return [clean(title) for title in lang_titles if clean(title)]
+        else:
+            print(ctx_id, "has no " + lang_id + " publications with genre", genre + "!")
+            return []
+    else:
+        print(ctx_id, "has no publications with genre", genre + "!")
+        return []
+
+
 def titles_from_ctx_in_language_and_genre_by_year(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE'):
     total = ld.get_data(ctx_id)[0]
     data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
     genres = data_set.get_genre_data()
     if genre in genres:
-        genr_data = DataSet(data_id=ctx_id+genre, raw=genres[genre])
-        lang_data = genr_data.get_languages_data()
+        genre_data = DataSet(data_id=ctx_id+genre, raw=genres[genre])
+        lang_data = genre_data.get_languages_data()
         if lang_id in lang_data:
             lang_records = lang_data[lang_id]
             lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
@@ -231,6 +252,33 @@ def titles_from_mpis_by_year(lang_id='eng'):
                         else:
                             with open(out_file, 'a', encoding="UTF-8") as f:
                                 f.write("\n".join(titles) + "\n")
+    print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
+
+
+def titles_from_mpis_by_genre(genre='ARTICLE', lang_id='eng'):
+    if not os.path.exists(MPI_LANG_GENRE):
+        os.makedirs(MPI_LANG_GENRE)
+    print("start extraction!")
+    start_time = time.time()
+    init = True
+    for mpi in mpis:
+        print("")
+        print("processing", mpi, "...")
+        mpi_ctxs = ous_ctx[mpi]
+        for mpi_ctx in mpi_ctxs:
+            print("extracting", mpi_ctx, "...")
+            titles = titles_from_ctx_in_language_and_genre(mpi_ctx,
+                                                           genre=genre,
+                                                           lang_id=lang_id)
+            if titles:
+                out_file = MPI_LANG_GENRE + mpi + '_' + genre + '.txt'
+                if init:
+                    with open(out_file, 'w', encoding="UTF-8") as f:
+                        f.write("\n".join(titles) + "\n")
+                    init = False
+                else:
+                    with open(out_file, 'a', encoding="UTF-8") as f:
+                        f.write("\n".join(titles) + "\n")
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 

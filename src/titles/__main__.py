@@ -54,6 +54,7 @@ print("extracting titles of institutes with shared language and year...")
 compile.titles_from_mpis_by_year()
 print("extracting titles of institutes with shared language, year and genre...")
 for g in genres:
+    compile.titles_from_mpis_by_genre(genre=g)
     compile.titles_from_mpis_in_genre_by_year(genre=g)
 print("")
 print("##############")
