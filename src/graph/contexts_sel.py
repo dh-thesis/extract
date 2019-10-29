@@ -20,7 +20,7 @@ ous = utils.read_json(PURE_DIR + "ous/all.json")
 mpis = utils.read_json(DATA_DIR + 'base/ctx_sel.json')
 
 institutes = [['Id','Label']]
-contexts = [['Id','Label']]
+contexts = [['Id','Label','Created']]
 
 for rec in ous['records']:
     if rec['data']['objectId'] in mpis:
@@ -44,7 +44,8 @@ for rec in ctxs['records']:
     objectId = rec['data']['objectId']
     if objectId in mpis_ctx:
         name = rec['data']['name'].replace('"','')
-        contexts.append([objectId, name])
+        created = rec['data']['creationDate'].split("-")[0]
+        contexts.append([objectId, name, created])
 
 utils.write_csv(GRAPH_DIR + 'sel--ctx_nodes.csv', contexts)
 
