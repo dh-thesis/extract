@@ -34,7 +34,7 @@ cats.sort()
 mpis.sort()
 
 
-def titles_from_ctx_in_language(ctx_id='ctx_1542176', lang_id='eng'):
+def titles_from_ctx_in_language(ctx_id='ctx_1542176', lang_id='eng', preprocess=True):
     total = ld.get_data(ctx_id)[0]
     data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
     lang_data = data_set.get_languages_data()
@@ -42,13 +42,15 @@ def titles_from_ctx_in_language(ctx_id='ctx_1542176', lang_id='eng'):
         lang_records = lang_data[lang_id]
         lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
         lang_titles = extract.titles_from_records(lang_data.records)
-        return [clean(title) for title in lang_titles if clean(title)]
+        if preprocess:
+            lang_titles = [clean(title) for title in lang_titles if clean(title)]
+        return lang_titles
     else:
         print(ctx_id, "has no " + lang_id + " publications!")
-        return {}
+        return []
 
 
-def titles_from_ctx_in_language_by_year(ctx_id='ctx_1542176', lang_id='eng'):
+def titles_from_ctx_in_language_by_year(ctx_id='ctx_1542176', lang_id='eng', preprocess=True):
     total = ld.get_data(ctx_id)[0]
     data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
     lang_data = data_set.get_languages_data()
@@ -60,7 +62,8 @@ def titles_from_ctx_in_language_by_year(ctx_id='ctx_1542176', lang_id='eng'):
         for year in years_data:
             lang_year_data = DataSet(data_id=lang_id + '_' + year, raw=years_data[year])
             lang_year_titles = extract.titles_from_records(lang_year_data.records)
-            lang_year_titles = [clean(title) for title in lang_year_titles if clean(title)]
+            if preprocess:
+                lang_year_titles = [clean(title) for title in lang_year_titles if clean(title)]
             lang_years_titles[year] = lang_year_titles
         return lang_years_titles
     else:
@@ -68,7 +71,7 @@ def titles_from_ctx_in_language_by_year(ctx_id='ctx_1542176', lang_id='eng'):
         return {}
 
 
-def titles_from_ctx_in_language_and_genre(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE'):
+def titles_from_ctx_in_language_and_genre(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE', preprocess=True):
     total = ld.get_data(ctx_id)[0]
     data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
     genres = data_set.get_genre_data()
@@ -79,7 +82,9 @@ def titles_from_ctx_in_language_and_genre(ctx_id='ctx_1542176', lang_id='eng', g
             lang_records = lang_data[lang_id]
             lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
             lang_titles = extract.titles_from_records(lang_data.records)
-            return [clean(title) for title in lang_titles if clean(title)]
+            if preprocess:
+                lang_titles = [clean(title) for title in lang_titles if clean(title)]
+            return lang_titles
         else:
             print(ctx_id, "has no " + lang_id + " publications with genre", genre + "!")
             return []
@@ -88,7 +93,7 @@ def titles_from_ctx_in_language_and_genre(ctx_id='ctx_1542176', lang_id='eng', g
         return []
 
 
-def titles_from_ctx_in_language_and_genre_by_year(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE'):
+def titles_from_ctx_in_language_and_genre_by_year(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE', preprocess=True):
     total = ld.get_data(ctx_id)[0]
     data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
     genres = data_set.get_genre_data()
@@ -103,7 +108,8 @@ def titles_from_ctx_in_language_and_genre_by_year(ctx_id='ctx_1542176', lang_id=
             for year in years_data:
                 lang_year_data = DataSet(data_id=lang_id + '_' + year, raw=years_data[year])
                 lang_year_titles = extract.titles_from_records(lang_year_data.records)
-                lang_year_titles = [clean(title) for title in lang_year_titles if clean(title)]
+                if preprocess:
+                    lang_year_titles = [clean(title) for title in lang_year_titles if clean(title)]
                 lang_years_titles[year] = lang_year_titles
             return lang_years_titles
         else:
@@ -114,10 +120,13 @@ def titles_from_ctx_in_language_and_genre_by_year(ctx_id='ctx_1542176', lang_id=
         return {}
 
 
-def titles_from_lang(lang_id='eng'):
+def titles_from_lang(lang_id='eng', preprocess=False):
     if not os.path.exists(ALL_LANG):
         os.makedirs(ALL_LANG)
-    out_file = ALL_LANG + lang_id + '.txt'
+    out_prefix = ALL_LANG + lang_id
+    if not preprocess:
+        out_prefix += "_raw"
+    out_file = out_prefix + '.txt'
     f = open(out_file, 'w', encoding="utf8")
     print("start extraction!")
     start_time = time.time()
@@ -127,17 +136,19 @@ def titles_from_lang(lang_id='eng'):
         mpi_ctxs = ous_ctx[mpi]
         for mpi_ctx in mpi_ctxs:
             print("extracting", mpi_ctx, "...")
-            titles = titles_from_ctx_in_language(mpi_ctx, lang_id=lang_id)
+            titles = titles_from_ctx_in_language(mpi_ctx,
+                                                 lang_id=lang_id,
+                                                 preprocess=preprocess)
             if titles:
                 f.write("\n".join(titles) + "\n")
     f.close()
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_lang_by_year(lang_id='eng'):
+def titles_from_lang_by_year(lang_id='eng', preprocess=False):
     if not os.path.exists(ALL_LANG_YEARS):
         os.makedirs(ALL_LANG_YEARS)
-    out_prefix = ALL_LANG_YEARS + lang_id + '_'
+    out_base = ALL_LANG_YEARS + lang_id + '_'
     print("start extraction!")
     start_time = time.time()
     init = {}
@@ -147,15 +158,21 @@ def titles_from_lang_by_year(lang_id='eng'):
         print("")
         print("processing", mpi, "...")
         mpi_ctxs = ous_ctx[mpi]
+        
         for mpi_ctx in mpi_ctxs:
             print("extracting", mpi_ctx, "...")
-            titles_lang_years = titles_from_ctx_in_language_by_year(mpi_ctx, lang_id=lang_id)
+            titles_lang_years = titles_from_ctx_in_language_by_year(mpi_ctx,
+                                                                    lang_id=lang_id,
+                                                                    preprocess=preprocess)
             for year in YEARS:
                 year = str(year)
                 if year in titles_lang_years:
                     titles = titles_lang_years[year]
                     if titles:
-                        out_file = out_prefix + year + '.txt'
+                        out_prefix = out_base + year
+                        if not preprocess:
+                            out_prefix += '_raw'
+                        out_file = out_prefix + '.txt'
                         if init[year]:
                             with open(out_file, 'w', encoding="UTF-8") as f:
                                 f.write("\n".join(titles) + "\n")
@@ -166,7 +183,7 @@ def titles_from_lang_by_year(lang_id='eng'):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_lang_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
+def titles_from_lang_in_genre_by_year(genre='ARTICLE', lang_id='eng', preprocess=False):
     if not os.path.exists(ALL_LANG_YEARS_GENRE):
         os.makedirs(ALL_LANG_YEARS_GENRE)
     print("start extraction!")
@@ -180,14 +197,21 @@ def titles_from_lang_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
         mpi_ctxs = ous_ctx[mpi]
         for mpi_ctx in mpi_ctxs:
             print("extracting", mpi_ctx, "...")
-            titles_lang_years = titles_from_ctx_in_language_and_genre_by_year(mpi_ctx, genre=genre, lang_id=lang_id)
-            out_prefix = ALL_LANG_YEARS_GENRE + lang_id + '_' + genre + '_'
+            titles_lang_years =\
+                titles_from_ctx_in_language_and_genre_by_year(mpi_ctx,
+                                                              genre=genre,
+                                                              lang_id=lang_id,
+                                                              preprocess=preprocess)
+            out_base = ALL_LANG_YEARS_GENRE + lang_id + '_' + genre + '_'
             for year in YEARS:
                 year = str(year)
                 if year in titles_lang_years:
                     titles = titles_lang_years[year]
                     if titles:
-                        out_file = out_prefix + year + '.txt'
+                        out_prefix = out_base + year
+                        if not preprocess:
+                            out_prefix += '_raw'
+                        out_file = out_prefix + '.txt'
                         if init[year]:
                             with open(out_file, 'w', encoding="UTF-8") as f:
                                 f.write("\n".join(titles) + "\n")
@@ -198,7 +222,7 @@ def titles_from_lang_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_mpis(lang_id='eng'):
+def titles_from_mpis(lang_id='eng', preprocess=False):
     if not os.path.exists(MPI_LANG):
         os.makedirs(MPI_LANG)
     print("start extraction!")
@@ -207,11 +231,16 @@ def titles_from_mpis(lang_id='eng'):
         print("")
         print("processing", mpi, "...")
         mpi_ctxs = ous_ctx[mpi]
-        out_file = MPI_LANG + mpi + '_' + lang_id + '.txt'
+        out_prefix = MPI_LANG + mpi + '_' + lang_id
+        if not preprocess:
+            out_prefix += '_raw'
+        out_file = out_prefix + '.txt'
         first = True
         for mpi_ctx in mpi_ctxs:
             print("extracting", mpi_ctx, "...")
-            titles = titles_from_ctx_in_language(mpi_ctx, lang_id=lang_id)
+            titles = titles_from_ctx_in_language(mpi_ctx,
+                                                 lang_id=lang_id,
+                                                 preprocess=preprocess)
             if titles:
                 if first:
                     with open(out_file, 'w', encoding="UTF-8") as f:
@@ -223,7 +252,7 @@ def titles_from_mpis(lang_id='eng'):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_mpis_by_year(lang_id='eng'):
+def titles_from_mpis_by_year(lang_id='eng', preprocess=False):
     if not os.path.exists(MPI_LANG_YEARS):
         os.makedirs(MPI_LANG_YEARS)
     print("start extraction!")
@@ -235,16 +264,21 @@ def titles_from_mpis_by_year(lang_id='eng'):
         for year in YEARS:
             init[str(year)] = True
         mpi_ctxs = ous_ctx[mpi]
-        out_prefix = MPI_LANG_YEARS + mpi + '_' + lang_id + '_'
+        out_base = MPI_LANG_YEARS + mpi + '_' + lang_id + '_'
         for mpi_ctx in mpi_ctxs:
             print("extracting", mpi_ctx, "...")
-            titles_lang_years = titles_from_ctx_in_language_by_year(mpi_ctx, lang_id=lang_id)
+            titles_lang_years = titles_from_ctx_in_language_by_year(mpi_ctx,
+                                                                    lang_id=lang_id,
+                                                                    preprocess=preprocess)
             for year in YEARS:
                 year = str(year)
                 if year in titles_lang_years:
                     titles = titles_lang_years[year]
                     if titles:
-                        out_file = out_prefix + year + '.txt'
+                        out_prefix = out_base + year
+                        if not preprocess:
+                            out_prefix += '_raw'
+                        out_file = out_prefix + '.txt'
                         if init[year]:
                             with open(out_file, 'w', encoding="UTF-8") as f:
                                 f.write("\n".join(titles) + "\n")
@@ -255,7 +289,7 @@ def titles_from_mpis_by_year(lang_id='eng'):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_mpis_by_genre(genre='ARTICLE', lang_id='eng'):
+def titles_from_mpis_by_genre(genre='ARTICLE', lang_id='eng', preprocess=False):
     if not os.path.exists(MPI_LANG_GENRE):
         os.makedirs(MPI_LANG_GENRE)
     print("start extraction!")
@@ -269,9 +303,13 @@ def titles_from_mpis_by_genre(genre='ARTICLE', lang_id='eng'):
             print("extracting", mpi_ctx, "...")
             titles = titles_from_ctx_in_language_and_genre(mpi_ctx,
                                                            genre=genre,
-                                                           lang_id=lang_id)
+                                                           lang_id=lang_id,
+                                                           preprocess=preprocess)
             if titles:
-                out_file = MPI_LANG_GENRE + mpi + '_' + genre + '.txt'
+                out_prefix = MPI_LANG_GENRE + mpi + '_' + genre
+                if not preprocess:
+                    out_prefix += '_raw'
+                out_file = out_prefix + '.txt'
                 if init:
                     with open(out_file, 'w', encoding="UTF-8") as f:
                         f.write("\n".join(titles) + "\n")
@@ -282,7 +320,7 @@ def titles_from_mpis_by_genre(genre='ARTICLE', lang_id='eng'):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_mpis_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
+def titles_from_mpis_in_genre_by_year(genre='ARTICLE', lang_id='eng', preprocess=False):
     if not os.path.exists(MPI_LANG_YEARS_GENRE):
         os.makedirs(MPI_LANG_YEARS_GENRE)
     print("start extraction!")
@@ -294,18 +332,22 @@ def titles_from_mpis_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
         for year in YEARS:
             init[str(year)] = True
         mpi_ctxs = ous_ctx[mpi]
-        out_prefix = MPI_LANG_YEARS_GENRE + mpi + '_' + lang_id + '_' + genre + '_'
+        out_base = MPI_LANG_YEARS_GENRE + mpi + '_' + lang_id + '_' + genre + '_'
         for mpi_ctx in mpi_ctxs:
             print("extracting", mpi_ctx, "...")
             titles_lang_years = titles_from_ctx_in_language_and_genre_by_year(mpi_ctx,
                                                                               genre=genre,
-                                                                              lang_id=lang_id)
+                                                                              lang_id=lang_id,
+                                                                              preprocess=preprocess)
             for year in YEARS:
                 year = str(year)
                 if year in titles_lang_years:
                     titles = titles_lang_years[year]
                     if titles:
-                        out_file = out_prefix + year + '.txt'
+                        out_prefix = out_base + year
+                        if not preprocess:
+                            out_prefix += '_raw'
+                        out_file = out_prefix + '.txt'
                         if init[year]:
                             with open(out_file, 'w', encoding="UTF-8") as f:
                                 f.write("\n".join(titles) + "\n")
@@ -316,7 +358,7 @@ def titles_from_mpis_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_cats(lang_id="eng"):
+def titles_from_cats(lang_id="eng", preprocess=False):
     if not os.path.exists(CAT_LANG):
         os.makedirs(CAT_LANG)
     print("start extraction!")
@@ -331,8 +373,11 @@ def titles_from_cats(lang_id="eng"):
                 mpi_ctxs = ous_ctx[ou]
                 for mpi_ctx in mpi_ctxs:
                     print("extracting", mpi_ctx, "...")
-                    titles = titles_from_ctx_in_language(mpi_ctx, lang_id)
-                    out_file = CAT_LANG + cat + '_' + lang_id + '.txt'
+                    titles = titles_from_ctx_in_language(mpi_ctx, lang_id=lang_id, preprocess=preprocess)
+                    out_prefix = CAT_LANG + cat + '_' + lang_id
+                    if not preprocess:
+                        out_prefix += '_raw'
+                    out_file = out_prefix + '.txt'
                     if init:
                         with open(out_file, 'w', encoding="UTF-8") as f:
                             f.write("\n".join(titles) + "\n")
@@ -343,7 +388,7 @@ def titles_from_cats(lang_id="eng"):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_cats_by_year(lang_id="eng"):
+def titles_from_cats_by_year(lang_id="eng", preprocess=False):
     if not os.path.exists(CAT_LANG_YEARS):
         os.makedirs(CAT_LANG_YEARS)
     print("start extraction!")
@@ -354,20 +399,25 @@ def titles_from_cats_by_year(lang_id="eng"):
         print("processing", cat, "...")
         for year in YEARS:
             init[str(year)] = True
-        out_prefix = CAT_LANG_YEARS + cat + '_' + lang_id + '_'
+        out_base = CAT_LANG_YEARS + cat + '_' + lang_id + '_'
         ous = cat_ous[cat]
         for ou in ous:
             if ou in mpis:
                 mpi_ctxs = ous_ctx[ou]
                 for mpi_ctx in mpi_ctxs:
                     print("extracting", mpi_ctx, "...")
-                    titles_lang_years = titles_from_ctx_in_language_by_year(mpi_ctx, lang_id=lang_id)
+                    titles_lang_years = titles_from_ctx_in_language_by_year(mpi_ctx,
+                                                                            lang_id=lang_id,
+                                                                            preprocess=preprocess)
                     for year in YEARS:
                         year = str(year)
                         if year in titles_lang_years:
                             titles = titles_lang_years[year]
                             if titles:
-                                out_file = out_prefix + year + '.txt'
+                                out_prefix = out_base + year
+                                if not preprocess:
+                                    out_prefix += '_raw'
+                                out_file = out_prefix + '.txt'
                                 if init[year]:
                                     with open(out_file, 'w', encoding="UTF-8") as f:
                                         f.write("\n".join(titles) + "\n")
@@ -378,7 +428,7 @@ def titles_from_cats_by_year(lang_id="eng"):
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
-def titles_from_cats_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
+def titles_from_cats_in_genre_by_year(genre='ARTICLE', lang_id='eng', preprocess=False):
     if not os.path.exists(CAT_LANG_YEARS_GENRE):
         os.makedirs(CAT_LANG_YEARS_GENRE)
     print("start extraction!")
@@ -390,21 +440,26 @@ def titles_from_cats_in_genre_by_year(genre='ARTICLE', lang_id='eng'):
         for year in YEARS:
             init[str(year)] = True
         ous = cat_ous[cat]
-        out_prefix = CAT_LANG_YEARS_GENRE + cat + '_' + lang_id + '_' + genre + '_'
+        out_base = CAT_LANG_YEARS_GENRE + cat + '_' + lang_id + '_' + genre + '_'
         for ou in ous:
             if ou in mpis:
                 mpi_ctxs = ous_ctx[ou]
                 for mpi_ctx in mpi_ctxs:
                     print("extracting", mpi_ctx, "...")
-                    titles_lang_years = titles_from_ctx_in_language_and_genre_by_year(mpi_ctx,
-                                                                                      genre=genre,
-                                                                                      lang_id=lang_id)
+                    titles_lang_years =\
+                        titles_from_ctx_in_language_and_genre_by_year(mpi_ctx,
+                                                                      genre=genre,
+                                                                      lang_id=lang_id,
+                                                                      preprocess=preprocess)
                     for year in YEARS:
                         year = str(year)
                         if year in titles_lang_years:
                             titles = titles_lang_years[year]
                             if titles:
-                                out_file = out_prefix + year + '.txt'
+                                out_prefix = out_base + year
+                                if not preprocess:
+                                    out_prefix += '_raw'
+                                out_file = out_prefix + '.txt'
                                 if init[year]:
                                     with open(out_file, 'w', encoding="UTF-8") as f:
                                         f.write("\n".join(titles) + "\n")

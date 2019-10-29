@@ -9,7 +9,7 @@ def routine():
     data_paths = []
     for root, dirs, files in os.walk(TITLES_OUT):
         for name in files:
-            if name.endswith(".txt"):
+            if not name.endswith("raw.txt") and name.endswith(".txt"):
                 data_paths.append(os.path.realpath(os.path.join(root, name)))
     for dp in data_paths:
         out_dir = "/".join(dp.split("/")[:-1])
