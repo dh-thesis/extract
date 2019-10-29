@@ -9,11 +9,14 @@ stop = get_stopwords('smart')
 
 punct = re.compile('[%s—]' % re.escape(string.punctuation))
 chars = re.compile('[^%s]' % re.escape(string.printable))
-
+latex_math = re.compile(r"[^a-z\s]?\$.+?\$[^a-z\s]?")
 
 def clean(title):
     title = clean_title(title)
     title = title.lower()
+    title = latex_math.sub("", title)
+    #title = re.sub(r"[^\S]\\[^\s]+", "", title) # latex commands (e.g. \bold)
+    #title = re.sub(r"[^\s]+\\[^\s]+", "", title) # latex special characters
     title = punct.sub(" ", title).strip()
     title = remove_numbers(title)
     title = remove_stopwords(title)
