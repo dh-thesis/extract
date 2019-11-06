@@ -9,7 +9,7 @@ stop = get_stopwords('smart')
 
 punct = re.compile(r"[^\w\s]")
 chars = re.compile("[^%s]" % re.escape(string.printable))
-latex_math = re.compile(r"[^a-z\s]?\$.+?\$[^a-z\s]?")
+latex_math = re.compile(r"[^\w\s]?\$.+?\$[^\w\s]?")
 
 
 def clean(title):
