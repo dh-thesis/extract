@@ -1,7 +1,9 @@
 article
 book
 chapter
+corrigendum
 epilogue
+erratum
 foreword
 introduction
 preface
@@ -11,13 +13,4 @@ report
 review
 synopsis
 university
-i
-ii
-iii
-iv
-v
-vi
-vii
-viii
-ix
-x
+univ
