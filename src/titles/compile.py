@@ -12,6 +12,7 @@ from ..utils.paths import DATA_DIR, MPIS_DIR, PURE_DIR, TITLES_OUT
 
 ALL_LANG = os.path.join(TITLES_OUT, 'all-lang/')
 ALL_LANG_YEARS = os.path.join(TITLES_OUT, 'all-lang-year/')
+ALL_LANG_GENRE = os.path.join(TITLES_OUT, 'all-lang-genre/')
 ALL_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'all-lang-year-genre/')
 
 MPI_LANG = os.path.join(TITLES_OUT, 'mpi-lang/')
@@ -142,6 +143,39 @@ def titles_from_lang(lang_id='eng', preprocess=False):
             if titles:
                 f.write("\n".join(titles) + "\n")
     f.close()
+    print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
+
+
+def titles_from_lang_in_genre(genre='ARTICLE', lang_id='eng', preprocess=False):
+    if not os.path.exists(ALL_LANG_GENRE):
+        os.makedirs(ALL_LANG_GENRE)
+    print("start extraction!")
+    start_time = time.time()
+    init = True
+    for mpi in mpis:
+        print("")
+        print("processing", mpi, "...")
+        mpi_ctxs = ous_ctx[mpi]
+        for mpi_ctx in mpi_ctxs:
+            print("extracting", mpi_ctx, "...")
+            titles =\
+                titles_from_ctx_in_language_and_genre(mpi_ctx,
+                                                      genre=genre,
+                                                      lang_id=lang_id,
+                                                      preprocess=preprocess)
+            out_base = ALL_LANG_GENRE + lang_id + '_' + genre
+            if titles:
+                out_prefix = ALL_LANG_GENRE + lang_id + '_' + genre
+                if not preprocess:
+                    out_prefix += '_raw'
+                out_file = out_prefix + '.txt'
+                if init:
+                    with open(out_file, 'w', encoding="UTF-8") as f:
+                        f.write("\n".join(titles) + "\n")
+                    init = False
+                else:
+                    with open(out_file, 'a', encoding="UTF-8") as f:
+                        f.write("\n".join(titles) + "\n")
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
