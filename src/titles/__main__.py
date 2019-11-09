@@ -45,6 +45,8 @@ compile.titles_from_lang_by_year(preprocess=True)
 print("extracting titles with shared language, year and genre...")
 for g in genres:
     print("about to extract titles from records of type", g, "...")
+    compile.titles_from_lang_in_genre(genre=g)
+    compile.titles_from_lang_in_genre(genre=g, preprocess=True)
     compile.titles_from_lang_in_genre_by_year(genre=g)
     compile.titles_from_lang_in_genre_by_year(genre=g, preprocess=True)
 
@@ -61,6 +63,7 @@ compile.titles_from_mpis_by_year()
 compile.titles_from_mpis_by_year(preprocess=True)
 print("extracting titles of institutes with shared language, year and genre...")
 for g in genres:
+    print("about to extract titles from records of type", g, "...")
     compile.titles_from_mpis_by_genre(genre=g)
     compile.titles_from_mpis_by_genre(genre=g, preprocess=True)
     compile.titles_from_mpis_in_genre_by_year(genre=g)
