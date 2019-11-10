@@ -14,3 +14,9 @@ review
 synopsis
 university
 univ
+ed
+eds
+pp
+vol
+isbn
+doi
