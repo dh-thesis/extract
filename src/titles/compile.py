@@ -20,6 +20,11 @@ MPI_LANG_YEARS = os.path.join(TITLES_OUT, 'mpi-lang-year/')
 MPI_LANG_GENRE = os.path.join(TITLES_OUT, 'mpi-lang-genre/')
 MPI_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'mpi-lang-year-genre/')
 
+PERS_LANG = os.path.join(TITLES_OUT, 'pers-lang/')
+PERS_LANG_YEARS = os.path.join(TITLES_OUT, 'pers-lang-year/')
+PERS_LANG_GENRE = os.path.join(TITLES_OUT, 'pers-lang-genre/')
+PERS_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'pers-lang-year-genre/')
+
 CAT_LANG = os.path.join(TITLES_OUT, 'cat-lang/')
 CAT_LANG_YEARS = os.path.join(TITLES_OUT, 'cat-lang-year/')
 CAT_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'cat-lang-year-genre/')
@@ -115,6 +120,113 @@ def titles_from_ctx_in_language_and_genre_by_year(ctx_id='ctx_1542176', lang_id=
             return lang_years_titles
         else:
             print(ctx_id, "has no " + lang_id + " publications with genre", genre + "!")
+            return {}
+    else:
+        print(ctx_id, "has no publications with genre", genre + "!")
+        return {}
+
+def titles_from_ctx_in_language_by_person(ctx_id='ctx_1542176', lang_id='eng', preprocess=True):
+    total = ld.get_data(ctx_id)[0]
+    data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
+    lang_data = data_set.get_languages_data()
+    if lang_id in lang_data:
+        lang_records = lang_data[lang_id]
+        lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
+        creator_rec = lang_data.get_creators_data()
+        creators = list(creator_rec.keys())
+        creator_titles = {}
+        creators.sort()
+        for c in creators:
+            titles = extract.titles_from_records(creator_rec[c])
+            if preprocess:
+                titles = [clean(title) for title in titles if clean(title)]
+            creator_titles[c] = titles
+        return creator_titles
+    else:
+        print(ctx_id, "has no " + lang_id + " publications!")
+        return {}
+
+
+def titles_from_ctx_in_language_by_person_and_year(ctx_id='ctx_1542176', lang_id='eng', preprocess=True):
+    total = ld.get_data(ctx_id)[0]
+    data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
+    lang_data = data_set.get_languages_data()
+    if lang_id in lang_data:
+        lang_records = lang_data[lang_id]
+        lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
+        creator_rec = lang_data.get_creators_data()
+        creators = list(creator_rec.keys())
+        creator_titles = {}
+        creators.sort()
+        for c in creators:
+            creator_titles[c] = {}
+            creator_data = DataSet(data_id=ctx_id+"_subset", raw=creator_rec[c])
+            years_data = creator_data.get_years_data()
+            for year in years_data:
+                titles = extract.titles_from_records(years_data[year])
+                if preprocess:
+                    titles = [clean(title) for title in titles if clean(title)]
+                creator_titles[c][year] = titles
+        return creator_titles
+    else:
+        print(ctx_id, "has no " + lang_id + " publications!")
+        return {}
+
+
+def titles_from_ctx_in_language_by_person_from_genre(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE', preprocess=True):
+    total = ld.get_data(ctx_id)[0]
+    data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
+    genres = data_set.get_genre_data()
+    if genre in genres:
+        genre_data = DataSet(data_id=ctx_id+genre, raw=genres[genre])
+        lang_data = genre_data.get_languages_data()
+        if lang_id in lang_data:
+            lang_records = lang_data[lang_id]
+            lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
+            creator_rec = lang_data.get_creators_data()
+            creators = list(creator_rec.keys())
+            creator_titles = {}
+            creators.sort()
+            for c in creators:
+                titles = extract.titles_from_records(creator_rec[c])
+                if preprocess:
+                    titles = [clean(title) for title in titles if clean(title)]
+                creator_titles[c] = titles
+            return creator_titles
+        else:
+            print(ctx_id, "has no " + lang_id + " publications!")
+            return {}
+    else:
+        print(ctx_id, "has no publications with genre", genre + "!")
+        return {}
+
+
+def titles_from_ctx_in_language_by_person_from_genre_by_year(ctx_id='ctx_1542176', lang_id='eng', genre='ARTICLE', preprocess=True):
+    total = ld.get_data(ctx_id)[0]
+    data_set = DataSet(data_id=ctx_id+"_released", raw=total.get_items_released())
+    genres = data_set.get_genre_data()
+    if genre in genres:
+        genre_data = DataSet(data_id=ctx_id+genre, raw=genres[genre])
+        lang_data = genre_data.get_languages_data()
+        if lang_id in lang_data:
+            lang_records = lang_data[lang_id]
+            lang_data = DataSet(data_id=ctx_id+'_'+lang_id, raw=lang_records)
+            creator_rec = lang_data.get_creators_data()
+            creators = list(creator_rec.keys())
+            creator_titles = {}
+            creators.sort()
+            for c in creators:
+                creator_titles[c] = {}
+                creator_data = DataSet(data_id=ctx_id+"_subset", raw=creator_rec[c])
+                years_data = creator_data.get_years_data()
+                for year in years_data:
+                    titles = extract.titles_from_records(years_data[year])
+                    if preprocess:
+                        titles = [clean(title) for title in titles if clean(title)]
+                    creator_titles[c][year] = titles
+            return creator_titles
+        else:
+            print(ctx_id, "has no " + lang_id + " publications!")
             return {}
     else:
         print(ctx_id, "has no publications with genre", genre + "!")
@@ -389,6 +501,151 @@ def titles_from_mpis_in_genre_by_year(genre='ARTICLE', lang_id='eng', preprocess
                         else:
                             with open(out_file, 'a', encoding="UTF-8") as f:
                                 f.write("\n".join(titles) + "\n")
+    print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
+
+
+def titles_from_persons(lang_id='eng', preprocess=False):
+    if not os.path.exists(PERS_LANG):
+        os.makedirs(PERS_LANG)
+    written = {}
+    print("start extraction!")
+    start_time = time.time()
+    for mpi in mpis:
+        print("")
+        print("processing", mpi, "...")
+        mpi_ctxs = ous_ctx[mpi]
+        for mpi_ctx in mpi_ctxs:
+            print("extracting", mpi_ctx, "...")
+            pers_titles = titles_from_ctx_in_language_by_person(mpi_ctx,
+                                                                lang_id=lang_id,
+                                                                preprocess=preprocess)
+            for pers in pers_titles:
+                titles = pers_titles[pers]
+                if len(titles) > 1:
+                    if pers in written:
+                        out_file = written[pers]
+                        with open(out_file, 'a', encoding="UTF-8") as f:
+                            f.write("\n".join(titles) + "\n")
+                    else:
+                        out_prefix = PERS_LANG + pers + "_" + lang_id
+                        if not preprocess:
+                            out_prefix += '_raw'
+                        out_file = out_prefix + '.txt'
+                        with open(out_file, 'w', encoding="UTF-8") as f:
+                            f.write("\n".join(titles) + "\n")
+                        written[pers] = out_file
+    print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
+
+
+def titles_from_persons_by_year(lang_id='eng', preprocess=False):
+    if not os.path.exists(PERS_LANG_YEARS):
+        os.makedirs(PERS_LANG_YEARS)
+    out_base = PERS_LANG_YEARS
+    print("start extraction!")
+    start_time = time.time()
+    written = {}
+    for mpi in mpis:
+        print("")
+        print("processing", mpi, "...")
+        mpi_ctxs = ous_ctx[mpi]
+        for mpi_ctx in mpi_ctxs:
+            print("extracting", mpi_ctx, "...")
+            titles_lang_pers_years = titles_from_ctx_in_language_by_person_and_year(mpi_ctx,
+                                                                                    lang_id=lang_id,
+                                                                                    preprocess=preprocess)
+            for pers in titles_lang_pers_years:
+                out_pers_base = out_base + pers + "_" + lang_id + "_"
+                for year in YEARS:
+                    year = str(year)
+                    if year in titles_lang_pers_years[pers]:
+                        titles = titles_lang_pers_years[pers][year]
+                        if titles:
+                            out_prefix = out_pers_base + year
+                            if not preprocess:
+                                out_prefix += '_raw'
+                            if out_prefix in written:
+                                out_file = written[out_prefix]
+                                with open(out_file, 'a', encoding="UTF-8") as f:
+                                    f.write("\n".join(titles) + "\n")
+                            else:
+                                out_file = out_prefix + '.txt'
+                                with open(out_file, 'w', encoding="UTF-8") as f:
+                                    f.write("\n".join(titles) + "\n")
+                                written[out_prefix] = out_file
+    print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
+
+
+def titles_from_persons_in_genre(genre='ARTICLE',lang_id='eng', preprocess=False):
+    if not os.path.exists(PERS_LANG_GENRE):
+        os.makedirs(PERS_LANG_GENRE)
+    out_base = PERS_LANG_GENRE
+    print("start extraction!")
+    start_time = time.time()
+    written = {}
+    for mpi in mpis:
+        print("")
+        print("processing", mpi, "...")
+        mpi_ctxs = ous_ctx[mpi]
+        for mpi_ctx in mpi_ctxs:
+            print("extracting", mpi_ctx, "...")
+            titles_lang_pers_genre = titles_from_ctx_in_language_by_person_from_genre(mpi_ctx,
+                                                                                      genre=genre,
+                                                                                      lang_id=lang_id,
+                                                                                      preprocess=preprocess)
+            for pers in titles_lang_pers_genre:
+                titles = titles_lang_pers_genre[pers]
+                if titles:
+                    out_prefix = out_base + pers + '_' + lang_id + '_' + genre
+                    if not preprocess:
+                        out_prefix += '_raw'
+                    if out_prefix in written:
+                        out_file = written[out_prefix]
+                        with open(out_file, 'a', encoding="UTF-8") as f:
+                            f.write("\n".join(titles) + "\n")
+                    else:
+                        out_file = out_prefix + '.txt'
+                        with open(out_file, 'w', encoding="UTF-8") as f:
+                            f.write("\n".join(titles) + "\n")
+                        written[out_prefix] = out_file
+    print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
+
+
+def titles_from_persons_in_genre_by_year(genre='ARTICLE',lang_id='eng', preprocess=False):
+    if not os.path.exists(PERS_LANG_YEARS_GENRE):
+        os.makedirs(PERS_LANG_YEARS_GENRE)
+    out_base = PERS_LANG_YEARS_GENRE
+    print("start extraction!")
+    start_time = time.time()
+    written = {}
+    for mpi in mpis:
+        print("")
+        print("processing", mpi, "...")
+        mpi_ctxs = ous_ctx[mpi]
+        for mpi_ctx in mpi_ctxs:
+            print("extracting", mpi_ctx, "...")
+            titles_lang_pers_years = titles_from_ctx_in_language_by_person_from_genre_by_year(mpi_ctx,
+                                                                                              genre=genre,
+                                                                                              lang_id=lang_id,
+                                                                                              preprocess=preprocess)
+            for pers in titles_lang_pers_years:
+                out_pers_base = out_base + pers + "_" + lang_id + "_" + genre + "_"
+                for year in YEARS:
+                    year = str(year)
+                    if year in titles_lang_pers_years[pers]:
+                        titles = titles_lang_pers_years[pers][year]
+                        if titles:
+                            out_prefix = out_pers_base + year
+                            if not preprocess:
+                                out_prefix += '_raw'
+                            if out_prefix in written:
+                                out_file = written[out_prefix]
+                                with open(out_file, 'a', encoding="UTF-8") as f:
+                                    f.write("\n".join(titles) + "\n")
+                            else:
+                                out_file = out_prefix + '.txt'
+                                with open(out_file, 'w', encoding="UTF-8") as f:
+                                    f.write("\n".join(titles) + "\n")
+                                written[out_prefix] = out_file
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
