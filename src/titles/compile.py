@@ -699,7 +699,7 @@ def titles_from_cats_in_genre(genre='ARTICLE', lang_id="eng", preprocess=False):
                                                                    lang_id=lang_id,
                                                                    preprocess=preprocess)
                     if titles:
-                        out_prefix = CAT_LANG + cat + '_' + lang_id + '_' + genre
+                        out_prefix = CAT_LANG_GENRE + cat + '_' + lang_id + '_' + genre
                         if not preprocess:
                             out_prefix += '_raw'
                         out_file = out_prefix + '.txt'
