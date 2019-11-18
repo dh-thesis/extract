@@ -26,6 +26,7 @@ PERS_LANG_GENRE = os.path.join(TITLES_OUT, 'pers-lang-genre/')
 PERS_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'pers-lang-year-genre/')
 
 CAT_LANG = os.path.join(TITLES_OUT, 'cat-lang/')
+CAT_LANG_GENRE = os.path.join(TITLES_OUT, 'cat-lang-genre/')
 CAT_LANG_YEARS = os.path.join(TITLES_OUT, 'cat-lang-year/')
 CAT_LANG_YEARS_GENRE = os.path.join(TITLES_OUT, 'cat-lang-year-genre/')
 
@@ -275,7 +276,6 @@ def titles_from_lang_in_genre(genre='ARTICLE', lang_id='eng', preprocess=False):
                                                       genre=genre,
                                                       lang_id=lang_id,
                                                       preprocess=preprocess)
-            out_base = ALL_LANG_GENRE + lang_id + '_' + genre
             if titles:
                 out_prefix = ALL_LANG_GENRE + lang_id + '_' + genre
                 if not preprocess:
@@ -665,17 +665,51 @@ def titles_from_cats(lang_id="eng", preprocess=False):
                 for mpi_ctx in mpi_ctxs:
                     print("extracting", mpi_ctx, "...")
                     titles = titles_from_ctx_in_language(mpi_ctx, lang_id=lang_id, preprocess=preprocess)
-                    out_prefix = CAT_LANG + cat + '_' + lang_id
-                    if not preprocess:
-                        out_prefix += '_raw'
-                    out_file = out_prefix + '.txt'
-                    if init:
-                        with open(out_file, 'w', encoding="UTF-8") as f:
-                            f.write("\n".join(titles) + "\n")
-                        init = False
-                    else:
-                        with open(out_file, 'a', encoding="UTF-8") as f:
-                            f.write("\n".join(titles) + "\n")
+                    if titles:
+                        out_prefix = CAT_LANG + cat + '_' + lang_id
+                        if not preprocess:
+                            out_prefix += '_raw'
+                        out_file = out_prefix + '.txt'
+                        if init:
+                            with open(out_file, 'w', encoding="UTF-8") as f:
+                                f.write("\n".join(titles) + "\n")
+                            init = False
+                        else:
+                            with open(out_file, 'a', encoding="UTF-8") as f:
+                                f.write("\n".join(titles) + "\n")
+    print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
+
+def titles_from_cats_in_genre(genre='ARTICLE', lang_id="eng", preprocess=False):
+    if not os.path.exists(CAT_LANG_GENRE):
+        os.makedirs(CAT_LANG_GENRE)
+    print("start extraction!")
+    start_time = time.time()
+    for cat in cats:
+        print("")
+        print("processing", cat, "...")
+        init = True
+        ous = cat_ous[cat]
+        for ou in ous:
+            if ou in mpis:
+                mpi_ctxs = ous_ctx[ou]
+                for mpi_ctx in mpi_ctxs:
+                    print("extracting", mpi_ctx, "...")
+                    titles = titles_from_ctx_in_language_and_genre(mpi_ctx,
+                                                                   genre=genre,
+                                                                   lang_id=lang_id,
+                                                                   preprocess=preprocess)
+                    if titles:
+                        out_prefix = CAT_LANG + cat + '_' + lang_id + '_' + genre
+                        if not preprocess:
+                            out_prefix += '_raw'
+                        out_file = out_prefix + '.txt'
+                        if init:
+                            with open(out_file, 'w', encoding="UTF-8") as f:
+                                f.write("\n".join(titles) + "\n")
+                            init = False
+                        else:
+                            with open(out_file, 'a', encoding="UTF-8") as f:
+                                f.write("\n".join(titles) + "\n")
     print("finished extraction after %s sec!" % round(time.time() - start_time, 2))
 
 
